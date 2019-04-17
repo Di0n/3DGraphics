@@ -2,7 +2,7 @@
 
 #include <GL\freeglut.h>
 #include <GL\GLU.h>
-#include "globals.h"
+#include "vector.h"
 class WorldObject
 {
 public:
@@ -15,7 +15,7 @@ public:
 	void			SetRotation(Vector3 rot);
 
 	virtual void	Update(float deltaTime) = 0;
-	virtual void	Draw() = 0;
+	virtual void	Draw(float worldscale) = 0;
 
 protected: 
 	// Transform

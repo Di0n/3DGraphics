@@ -19,13 +19,15 @@ void onSpecialFunc(int key, int x, int y);
 #define WIDTH	1920
 #define HEIGHT	1080
 #define ESCAPE_KEY 27
+#define WORLDSCALE 1.0f
 
 using std::vector;
 using std::unique_ptr;
 
-typedef unique_ptr<WorldObject> WorldObject_Ptr; // shared_ptr
+typedef unique_ptr<WorldObject> WorldObjectPtr; // shared_ptr ?
 
-vector <WorldObject_Ptr> objectList;
+vector <WorldObjectPtr> objectList;
+bool wireFrame(false);
 
 bool init()
 {
@@ -47,7 +49,7 @@ bool init()
 	pos4.x = 0;
 	pos4.y = 0;
 	pos4.z = 2;
-	
+
 	Cube* cube1 = new Cube(1, pos1);
 	cube1->SetColor(1.0f, 0.0f, 0.0f);
 	objectList.push_back(unique_ptr<Cube>(cube1));
@@ -93,17 +95,21 @@ int main(int argc, char* argv[])
 void onDisplay()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70.0f, WIDTH / (float) HEIGHT, 0.1f, 50.0f);
+	gluPerspective(70.0f, WIDTH / (float)HEIGHT, 0.1f, 50.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	gluLookAt(0, 3, -5,
-				0, 0, 0,
-				0, 1, 0);
+		0, 0, 0,
+		0, 1, 0);
 
-	for (auto& obj : objectList) obj->Draw();
+	glPolygonMode(GL_FRONT_AND_BACK, wireFrame ? GL_LINE : GL_FILL);
+	
+	// Teken objecten in wereld
+	for (const auto& obj : objectList) obj->Draw(WORLDSCALE);
 
 	glFlush();
 	glutSwapBuffers();
@@ -125,10 +131,10 @@ int prevTime = 0;
 int animationTime = 0;
 void onUpdate()
 {
-	Sleep(1);
+	Sleep(1); // Yield de cpu voor andere processen
 
-	int timeSinceStart = glutGet(GLUT_ELAPSED_TIME); // in millis 
-	float deltaTime = ((float)(timeSinceStart - prevTime)) / 1000;
+	const int timeSinceStart = glutGet(GLUT_ELAPSED_TIME); // in millis 
+	const float deltaTime = ((float)(timeSinceStart - prevTime)) / 1000;
 	
 	int i = 0;
 	for (auto & obj : objectList)
@@ -137,14 +143,14 @@ void onUpdate()
 		if (i == 0) vec.x += 22 * deltaTime;
 		else if (i == 1) vec.y += 22 * deltaTime;
 		else if (i == 2) vec.z += 22 * deltaTime;
-		else if (i == 3) vec.y += 22 * deltaTime;
-
-		obj->SetRotation(vec);
-		obj->Update(deltaTime);
+		else if (i == 3) vec.z += 22 * deltaTime;
+		
+		obj->SetRotation(vec);	// Zet de rotatie op het object
+		obj->Update(deltaTime); // Laat worldobject zijn eigen updates uitvoeren (collision checks etc)
 		i++;
 	}
 	prevTime = timeSinceStart;
-	glutPostRedisplay();
+	glutPostRedisplay();		// Post redraw.
 }
 
 
@@ -176,6 +182,7 @@ void onSpecialFunc(int key, int x, int y)
 		//rotateY += 5;
 		rotation.y += 5;
 		wo->SetRotation(rotation);
+
 		//wo->SetRotation(rotation);
 		break;
 	case GLUT_KEY_F8:
@@ -185,6 +192,9 @@ void onSpecialFunc(int key, int x, int y)
 
 		break;
 	}
+	case GLUT_KEY_F11:
+		wireFrame = !wireFrame;
+		break;
 	default:
 		break;
 	}

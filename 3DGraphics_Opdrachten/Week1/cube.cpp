@@ -25,14 +25,14 @@ void Cube::Update(float deltaTime)
 	//rotation.x += 16.5f * deltaTime;
 	//rotation.y += 22.5f * deltaTime;
 }
-float worldScale = 1.0f;
-void Cube::Draw()
+
+void Cube::Draw(float worldscale)
 {
 	// Start matrix
 	glPushMatrix();
 
 	// Schaal met wereld schaal
-	glTranslatef(translation.x * worldScale, translation.y * worldScale, translation.z * worldScale);
+	glTranslatef(translation.x * worldscale, translation.y * worldscale, translation.z * worldscale);
 	
 	// Roteer assen op hoek
 	glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
@@ -40,7 +40,7 @@ void Cube::Draw()
 	glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
 	
 	// Schaal object
-	glScalef(scale * worldScale, scale * worldScale, scale * worldScale);
+	glScalef(scale * worldscale, scale * worldscale, scale * worldscale);
 
 	// Transleer opnieuw naar 0
 	glTranslatef(0, 0, 0);
@@ -50,6 +50,7 @@ void Cube::Draw()
 	glPopMatrix();
 }
 
+// Draws a cube using the set colors in sides[].
 void Cube::DrawCube()
 {
 	// Voorkant

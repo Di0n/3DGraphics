@@ -15,7 +15,7 @@ public:
 
 
 	virtual void Update(float deltaTime);
-	virtual void Draw();
+	virtual void Draw(float worldscale);
 
 private:
 	void DrawCube();
