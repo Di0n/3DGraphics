@@ -1,5 +1,6 @@
 #include <GL/freeglut.h>
 #include <cstdio>
+#include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <time.h>
@@ -13,6 +14,7 @@ float lastFrameTime = 0;
 
 int width, height;
 GLuint textureId;
+int textureWidth, textureHeight;
 
 
 struct Camera
@@ -75,7 +77,6 @@ void drawTexCube()
 	glBindTexture(GL_TEXTURE_2D, textureId);
 
 	glBegin(GL_QUADS);
-	
 
 	glTexCoord2f(0, 0); glVertex3f(-1, -1, -1);
 	glTexCoord2f(1, 0); glVertex3f(1, -1, -1);
@@ -109,10 +110,114 @@ void drawTexCube()
 
 	glEnd();
 }
+//int spriteWidth = 16, spriteHeight = 16;
+//int texWidth = TILE_SIZE, texHeight = TILE_SIZE;
+
+
+// widht & height % 16 voor grootte in 0,1 formaat
+
 void drawCube(int index)
 {
-	int row = index / TEXTURE_SIZE;
-	int column = index % TEXTURE_SIZE;
+	/*
+	In het geval van 3
+	row = 3 / 16 = 0.1875 = 0 = Rij 1
+	column = 3 % 16 = 3 Item = 3
+	*/
+	const int row = index / TEXTURE_SIZE;
+	const int column = index % TEXTURE_SIZE;
+	const float textureSize = (float)1 / TEXTURE_SIZE;//0.0625f;//(textureWidth / TEXTURE_SIZE) % TEXTURE_SIZE;
+
+	//float div = index / 255;
+	//float x1 = index * div;
+	//float x2 = (index * div) + div;
+
+	
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	glBegin(GL_QUADS);
+
+	float x = column * textureSize;
+	float y = row * textureSize;
+	
+	float xEnd = x + textureSize;
+	float yEnd = y + textureSize;
+
+
+	// Achterkant
+	// Original
+	//glTexCoord2f(0, 0); glVertex3f(-1, -1, -1);
+	//glTexCoord2f(1, 0); glVertex3f(1, -1, -1);
+	//glTexCoord2f(1, 1); glVertex3f(1, 1, -1);
+	//glTexCoord2f(0, 1); glVertex3f(-1, 1, -1);
+
+	glTexCoord2f(x, y); glVertex3f(1, 1, -1);
+	glTexCoord2f(xEnd, y); glVertex3f(-1, 1, -1);
+	glTexCoord2f(xEnd, yEnd); glVertex3f(-1, -1, -1);
+	glTexCoord2f(x, yEnd); glVertex3f(1, -1, -1);
+
+
+	// Voorkant
+	//
+	glTexCoord2f(x, y); glVertex3f(-1, 1, 1);
+	glTexCoord2f(x + textureSize, y); glVertex3f(1, 1, 1);
+	glTexCoord2f(x + textureSize, y + textureSize); glVertex3f(1, -1, 1);
+	glTexCoord2f(x, y + textureSize); glVertex3f(-1, -1, 1);
+
+	// Original
+	/*glTexCoord2f(0, 0); glVertex3f(-1, -1, 1);
+	glTexCoord2f(0, 1); glVertex3f(1, -1, 1);
+	glTexCoord2f(1, 1); glVertex3f(1, 1, 1);
+	glTexCoord2f(1, 0); glVertex3f(-1, 1, 1);*/
+
+	// Zijkant links
+	// Original
+	/*glTexCoord2f(0, 0); glVertex3f(-1, -1, -1);
+	glTexCoord2f(0, 1); glVertex3f(-1, 1, -1);
+	glTexCoord2f(1, 1); glVertex3f(-1, 1, 1);
+	glTexCoord2f(1, 0); glVertex3f(-1, -1, 1);*/
+
+	glTexCoord2f(x, y); glVertex3f(-1, 1, -1);
+	glTexCoord2f(x, y + textureSize); glVertex3f(-1, -1, -1);
+	glTexCoord2f(x + textureSize, y + textureSize); glVertex3f(-1, -1, 1);
+	glTexCoord2f(x + textureSize,y); glVertex3f(-1, 1, 1);
+
+	// Zijkant rechts
+	// Original
+	//glTexCoord2f(0, 0);  glVertex3f(1, -1, -1);
+	//glTexCoord2f(0, 1); glVertex3f(1, 1, -1);
+	//glTexCoord2f(1, 1); glVertex3f(1, 1, 1);
+	//glTexCoord2f(1, 0); glVertex3f(1, -1, 1);
+
+	glTexCoord2f(x, y);  glVertex3f(1, 1, 1);
+	glTexCoord2f(x, y + textureSize); glVertex3f(1, -1, 1);
+	glTexCoord2f(x + textureSize, y + textureSize); glVertex3f(1, -1, -1);
+	glTexCoord2f(x + textureSize, y); glVertex3f(1, 1, -1);
+
+	// Onderkant
+	// Original
+	/*glTexCoord2f(0, 0); glVertex3f(-1, -1, -1);
+	glTexCoord2f(0, 1); glVertex3f(1, -1, -1);
+	glTexCoord2f(1, 1); glVertex3f(1, -1, 1);
+	glTexCoord2f(1, 0); glVertex3f(-1, -1, 1);*/
+	glTexCoord2f(x, y); glVertex3f(-1, -1, -1);
+	glTexCoord2f(x, y + textureSize); glVertex3f(1, -1, -1);
+	glTexCoord2f(x + textureSize, y + textureSize); glVertex3f(1, -1, 1);
+	glTexCoord2f(x + textureSize, y); glVertex3f(-1, -1, 1);
+
+	// Bovenkant
+	// Original
+	/*glTexCoord2f(0, 0); glVertex3f(-1, 1, -1);
+	glTexCoord2f(0, 1); glVertex3f(1, 1, -1);
+	glTexCoord2f(1, 1); glVertex3f(1, 1, 1);
+	glTexCoord2f(1, 0); glVertex3f(-1, 1, 1);*/
+
+	glTexCoord2f(x, y); glVertex3f(-1, 1, -1);
+	glTexCoord2f(x, y + textureSize); glVertex3f(1, 1, -1);
+	glTexCoord2f(x + textureSize, y + textureSize); glVertex3f(1, 1, 1);
+	glTexCoord2f(x + textureSize, y); glVertex3f(-1, 1, 1);
+
+	glEnd();
 }
 
 void display()
@@ -129,11 +234,9 @@ void display()
 	glRotatef(camera.rotX, 1, 0, 0);
 	glRotatef(camera.rotY, 0, 1, 0);
 	glTranslatef(camera.posX, 0, camera.posY);
-
-
 	
 	glBegin(GL_QUADS);
-	//glColor3f(0.1f, 1.0f, 0.2f);
+	glColor3f(0.1f, 1.0f, 0.2f);
 	glVertex3f(-15, -1, -15);
 	glVertex3f(15, -1, -15);
 	glVertex3f(15, -1, 15);
@@ -141,9 +244,9 @@ void display()
 	glEnd();
 
 	glPushMatrix();
-
+	glColor3f(1, 1, 1);
 	glTranslatef(0, 0.0f, 0);
-	drawTexCube();
+	drawCube(24);
 	glPopMatrix();
 	/*for (int x = -10; x <= 10; x += 5)
 	{
@@ -216,6 +319,7 @@ void initGraphics()
 	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glAlphaFunc(GL_GREATER, 0.5);
 
 	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -226,22 +330,22 @@ void initGraphics()
 		data[i] = rand() % 256;
 	}*/
 
-	int w, h, bpp;
+	int bpp;
 	//stbi_set_flip_vertically_on_load(1);
 
-	unsigned char* imgData = stbi_load("terrain.png", &w, &h, &bpp, 4);
+	unsigned char* imgData = stbi_load("terrain.png", &textureWidth, &textureHeight, &bpp, 4);
 	glTexImage2D(GL_TEXTURE_2D, 
 				0, 
 				GL_RGBA,
-				w,
-				h,
+				textureWidth,
+				textureHeight,
 				0,
 				GL_RGBA,
 				GL_UNSIGNED_BYTE,
 				imgData);
 	stbi_image_free(imgData);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 }
 int main(int argc, char* argv[])
