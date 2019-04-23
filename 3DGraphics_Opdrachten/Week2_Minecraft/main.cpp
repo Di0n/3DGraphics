@@ -7,6 +7,7 @@
 #include "stb_image.h"
 
 
+#define TEXTURE_SIZE 16
 
 float lastFrameTime = 0;
 
@@ -110,7 +111,8 @@ void drawTexCube()
 }
 void drawCube(int index)
 {
-
+	int row = index / TEXTURE_SIZE;
+	int column = index % TEXTURE_SIZE;
 }
 
 void display()
@@ -225,9 +227,9 @@ void initGraphics()
 	}*/
 
 	int w, h, bpp;
-	stbi_set_flip_vertically_on_load(1);
+	//stbi_set_flip_vertically_on_load(1);
 
-	unsigned char* imgData = stbi_load("mike_wazowski.jpg", &w, &h, &bpp, 4);
+	unsigned char* imgData = stbi_load("terrain.png", &w, &h, &bpp, 4);
 	glTexImage2D(GL_TEXTURE_2D, 
 				0, 
 				GL_RGBA,
