@@ -8,13 +8,14 @@
 #include "stb_image.h"
 
 
-#define TEXTURE_SIZE 16
+#define COLUMNS 16
 
 float lastFrameTime = 0;
 
 int width, height;
 GLuint textureId;
 int textureWidth, textureHeight;
+int sky[20][20][10] = {-1};
 
 
 struct Camera
@@ -123,9 +124,9 @@ void drawCube(int index)
 	row = 3 / 16 = 0.1875 = 0 = Rij 1
 	column = 3 % 16 = 3 Item = 3
 	*/
-	const int row = index / TEXTURE_SIZE;
-	const int column = index % TEXTURE_SIZE;
-	const float textureSize = (float)1 / TEXTURE_SIZE;//0.0625f;//(textureWidth / TEXTURE_SIZE) % TEXTURE_SIZE;
+	const int row = index / COLUMNS;
+	const int column = index % COLUMNS;
+	const float textureSize = (float)1 / COLUMNS;//0.0625f;//(textureWidth / COLUMNS) % COLUMNS;
 
 	//float div = index / 255;
 	//float x1 = index * div;
@@ -253,8 +254,9 @@ void display()
 		for (int y = -10; y <= 10; y += 5)
 		{
 			glPushMatrix();
+			glColor3f(1, 1, 1);
 			glTranslatef((float)x, 0.0f, (float)y);
-			drawCube();
+			drawCube(24);
 			glPopMatrix();
 		}
 	}*/
