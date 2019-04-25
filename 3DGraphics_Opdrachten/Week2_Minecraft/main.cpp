@@ -17,7 +17,11 @@ GLuint textureId;
 int textureWidth, textureHeight;
 int sky[20][20][10] = {-1};
 
-
+//{
+//	{ {10 items}, {10 items}, {10 items} x 20 }
+//	{ {10 items}, { 10 items }, { 10 items } x 20 }
+//	x20
+//}
 struct Camera
 {
 	float posX = 0;
