@@ -116,9 +116,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="Vec.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ObjModel.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Vec.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
