@@ -1,7 +1,7 @@
 #include "PlayerComponent.h"
 #include "GameObject.h"
 
-extern bool keys[256];
+//extern bool keys[256];
 
 
 
@@ -15,7 +15,7 @@ PlayerComponent::~PlayerComponent()
 
 void PlayerComponent::update(float elapsedTime)
 {
-	if (keys['w'])
+	/*if (keys['w'])
 		gameObject->position.z -= elapsedTime * speed;
 	if (keys['s'])
 		gameObject->position.z += elapsedTime * speed;
@@ -23,5 +23,5 @@ void PlayerComponent::update(float elapsedTime)
 		gameObject->position.x -= elapsedTime * speed;
 	if (keys['d'])
 		gameObject->position.x += elapsedTime * speed;
-
+*/
 }

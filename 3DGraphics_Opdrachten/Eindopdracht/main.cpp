@@ -209,11 +209,15 @@ bool initGlut(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 	glutKeyboardUpFunc(keyboardup);
 	glutPassiveMotionFunc(mousePassiveMotion);
+
+	return true;
 }
 
 bool initOpenGL()
 {
 	glEnable(GL_DEPTH_TEST);
+
+	return true;
 }
 int main(int argc, char** argv)
 {
@@ -236,7 +240,11 @@ int main(int argc, char** argv)
 		return OPENGL_INIT_FAILED;
 	}
 
+	// Start loading in game content.
 	Game::loadContent();
+
+	// Start game.
+	glutMainLoop();
 
 	return EXIT_SUCCESS;
 }

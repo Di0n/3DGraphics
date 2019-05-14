@@ -76,7 +76,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)freeglut\include</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)freeglut\lib</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +119,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CubeComponent.h" />
+    <ClInclude Include="DrawComponent.h" />
+    <ClInclude Include="Game.hpp" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="MoveToComponent.h" />
+    <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="SpinComponent.h" />
+    <ClInclude Include="TimerJumper.h" />
+    <ClInclude Include="Vec.h" />
+    <ClInclude Include="Vertex.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CubeComponent.cpp" />
+    <ClCompile Include="DrawComponent.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoveToComponent.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="TimerJumper.cpp" />
+    <ClCompile Include="Vec.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
