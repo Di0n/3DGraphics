@@ -9,6 +9,11 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	if (drawComponent)
+		delete drawComponent;
+	for (auto& c : components)
+		delete c;
+	components.clear();
 }
 
 void GameObject::addComponent(Component * component)

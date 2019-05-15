@@ -131,7 +131,9 @@
 //}
 //
 //
-
+/*
+	Engine functionality
+*/
 #include <iostream>
 #include <GL\freeglut.h>
 #include "Globals.hpp"
@@ -209,6 +211,7 @@ bool initGlut(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 	glutKeyboardUpFunc(keyboardup);
 	glutPassiveMotionFunc(mousePassiveMotion);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
 	return true;
 }
@@ -243,8 +246,11 @@ int main(int argc, char** argv)
 	// Start loading in game content.
 	Game::loadContent();
 
+	Game::onResize(windowWidth, windowHeight);
 	// Start game.
 	glutMainLoop();
+
+	Game::onClose();
 
 	return EXIT_SUCCESS;
 }

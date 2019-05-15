@@ -1,12 +1,12 @@
 #pragma once
-
 class GameObject;
-
+typedef 
 // A non drawable component
 class Component
 {
 protected:
 	GameObject* gameObject;
+
 public:
 	Component();
 	~Component();

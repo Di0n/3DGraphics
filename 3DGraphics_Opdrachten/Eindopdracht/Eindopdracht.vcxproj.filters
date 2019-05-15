@@ -66,6 +66,12 @@
     <ClInclude Include="Vertex.hpp">
       <Filter>Header Files\Gameobjects</Filter>
     </ClInclude>
+    <ClInclude Include="BackgroundComponent.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -100,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="Vec.cpp">
       <Filter>Source Files\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BackgroundComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
