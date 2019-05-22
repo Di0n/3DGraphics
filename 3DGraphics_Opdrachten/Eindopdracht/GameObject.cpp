@@ -9,10 +9,11 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
-	if (drawComponent)
-		delete drawComponent;
 	for (auto& c : components)
-		delete c;
+	{
+		if (c != nullptr)
+			delete c;
+	}
 	components.clear();
 }
 
