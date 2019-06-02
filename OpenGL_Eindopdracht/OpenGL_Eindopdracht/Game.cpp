@@ -2,12 +2,13 @@
 #include <list>
 #include <iostream>
 #include <GL\freeglut.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "Camera.hpp"
 #include "GameObject.h"
 #include "CubeComponent.h"
 #include "PlayerComponent.h"
-
 
 namespace Game
 {
@@ -22,6 +23,7 @@ namespace Game
 	
 	// Player object
 	GameObject* player;
+
 
 	void loadContent()
 	{
@@ -53,8 +55,12 @@ namespace Game
 		glTranslatef(camera.posX, camera.posZ, camera.posY);
 
 
+		//glColor3f(0.5f, 0.8f, 0.2f);
+		for (const auto& o : objects)
+			o->draw(); 
+
 		// Floor
-		glColor3f(0.1f, 1.0f, 0.2f);
+		/*glColor3f(0.1f, 1.0f, 0.2f);
 		glBegin(GL_QUADS);
 		glVertex3f(-15, -1, -15);
 		glVertex3f(15, -1, -15);
@@ -64,7 +70,10 @@ namespace Game
 
 		glColor3f(0.5f, 0.8f, 0.2f);
 		for (const auto& o : objects)
-			o->draw();
+			o->draw();*/
+
+
+
 		//glBegin(GL_QUADS);
 		//glVertex3f(-15, -1, -15);
 		//glVertex3f(15, -1, -15);

@@ -41,7 +41,7 @@ void mousePassiveMotion(int x, int y)
 
 void display()
 {
-	glClearColor(0.9f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_PROJECTION);
