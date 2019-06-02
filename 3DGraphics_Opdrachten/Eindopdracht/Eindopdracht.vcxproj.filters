@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Gameobjects">
       <UniqueIdentifier>{c883f805-2b52-4037-a96b-26ad850d8f0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ObjectLoader">
+      <UniqueIdentifier>{b54e74ac-20ee-4c05-9285-6a86456097f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.hpp">
@@ -71,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="CameraComponent.hpp">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJ_Loader.h">
+      <Filter>Header Files\ObjectLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

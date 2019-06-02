@@ -129,6 +129,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.hpp" />
     <ClInclude Include="MoveToComponent.h" />
+    <ClInclude Include="OBJ_Loader.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="TimerJumper.h" />

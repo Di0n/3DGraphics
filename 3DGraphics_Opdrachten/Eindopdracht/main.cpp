@@ -78,7 +78,7 @@ bool initGlut(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 	glutKeyboardUpFunc(keyboardup);
 	glutPassiveMotionFunc(mousePassiveMotion);
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	return true;
 }

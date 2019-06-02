@@ -17,7 +17,7 @@ PlayerComponent::~PlayerComponent()
 
 void PlayerComponent::update(float elapsedTime)
 {
-	const float correctedSpeed = elapsedTime * speed;
+	/*const float correctedSpeed = elapsedTime * speed;
 
 	CameraComponent* camera = gameObject->getComponent<CameraComponent>();
 	if (!camera) return;
@@ -42,7 +42,7 @@ void PlayerComponent::update(float elapsedTime)
 	{
 		gameObject->position.x += correctedSpeed;
 		camera->move(180, correctedSpeed);
-	}
+	}*/
 
 }
 
