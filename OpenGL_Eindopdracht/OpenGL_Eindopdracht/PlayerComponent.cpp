@@ -1,8 +1,7 @@
 #include "PlayerComponent.h"
+#include "CameraComponent.hpp"
 #include "GameObject.h"
 #include "Game.hpp"
-//extern bool keys[256];
-
 
 
 PlayerComponent::PlayerComponent()
@@ -16,7 +15,7 @@ PlayerComponent::~PlayerComponent()
 
 void PlayerComponent::update(float elapsedTime)
 {
-	/*const float correctedSpeed = elapsedTime * speed;
+	const float correctedSpeed = elapsedTime * speed;
 
 	CameraComponent* camera = gameObject->getComponent<CameraComponent>();
 	if (!camera) return;
@@ -41,13 +40,10 @@ void PlayerComponent::update(float elapsedTime)
 	{
 		gameObject->position.x += correctedSpeed;
 		camera->move(180, correctedSpeed);
-	}*/
-
+	}
 }
 
 void PlayerComponent::move(float angle, float fac)
 {
-	
-
 
 }

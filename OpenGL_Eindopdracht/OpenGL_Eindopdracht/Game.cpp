@@ -5,16 +5,26 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "TextureManager.hpp"
 #include "Camera.hpp"
 #include "GameObject.h"
 #include "CubeComponent.h"
+#include "CameraComponent.hpp"
 #include "PlayerComponent.h"
+#include "WallComponent.h"
+#include "FloorComponent.hpp"
+#include "TextureResource.hpp"
+#include "Level.hpp"
 
 namespace Game
 {
+	void setUpScene();
+
 	int windowWidth, windowHeight;
 	bool keys[256];
 
+	TextureManager textureManager;
+	
 	// Active world camera
 	Camera camera;
 
@@ -24,23 +34,19 @@ namespace Game
 	// Player object
 	GameObject* player;
 
-
+	
 	void loadContent()
 	{
 		ZeroMemory(keys, sizeof(keys));
-
-		camera = Camera(0, -4, 0, 0, 0, 0);
-		GameObject* o = new GameObject();
-		o->addComponent(new CubeComponent(0.5));
-
-		o->position = Vec3f(0, 4, 0);
-		player = new GameObject();
-		player->addComponent(new PlayerComponent());
-
-		player->position = Vec3f(0, 0, 0);
 		
-		objects.push_back(o);
-		objects.push_back(player);
+		textureManager.addTextureSource(TEXTURE_WALL);
+		textureManager.addTextureSource(TEXTURE_FLOOR);
+		textureManager.addTextureSource(TEXTURE_TABLE);
+		textureManager.load();
+
+		camera = Camera(0,-4,0,0,0,0);
+		Level level = Level(&camera, &objects, &textureManager);
+		level.setup();
 	}
 	void update(float deltaTime)
 	{
@@ -55,7 +61,7 @@ namespace Game
 		glTranslatef(camera.posX, camera.posZ, camera.posY);
 
 
-		//glColor3f(0.5f, 0.8f, 0.2f);
+		glColor3f(0.5f, 0.8f, 0.2f);
 		for (const auto& o : objects)
 			o->draw(); 
 
@@ -135,5 +141,55 @@ namespace Game
 		objects.clear();
 
 		std::cout << "Closing game.\n";
+	}
+
+	void createWalls()
+	{
+
+	}
+
+	void createFloor()
+	{
+
+	}
+	void setUpScene()
+	{
+		camera = Camera(0, -4, 0, 0, 0, 0);
+
+		//// PLAYER
+		//player = new GameObject();
+		//player->addComponent(new PlayerComponent());
+		//player->addComponent(new CameraComponent(&camera));
+
+		//player->position = Vec3f(0, 0, 0);
+
+		//// TEST
+		//GameObject* o = new GameObject();
+		//o->addComponent(new CubeComponent(0.5));
+		//o->position = Vec3f(0, 4, 0);
+
+		//// BACK WALLS
+		//GLuint textureID;
+		//textureManager.getTexture(TEXTURE_WALL, &textureID);
+		//GameObject* wallObject = new GameObject();
+		//wallObject->addComponent(new WallComponent(1, textureID));
+		//wallObject->position = Vec3f(0, 0, 0);
+
+		//// FLOOR
+		//textureManager.getTexture(TEXTURE_FLOOR, &textureID);
+		//GameObject* floor = new GameObject();
+		//floor->addComponent(new FloorComponent(1, textureID));
+		//floor->position = Vec3f(0, 0, 2);
+
+		//// TABLE
+		//textureManager.getTexture(TEXTURE_TABLE, &textureID);
+		//GameObject* table = new GameObject();
+
+		//
+
+		//objects.push_back(o);
+		//objects.push_back(wallObject);
+		//objects.push_back(floor);
+		//objects.push_back(player);
 	}
 }

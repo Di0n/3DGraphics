@@ -119,34 +119,50 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CubeComponent.cpp" />
     <ClCompile Include="DrawComponent.cpp" />
+    <ClCompile Include="FloorComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TimerJumper.cpp" />
+    <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vec.cpp" />
+    <ClCompile Include="WallComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="CameraComponent.hpp" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="CubeComponent.h" />
     <ClInclude Include="DrawComponent.h" />
+    <ClInclude Include="FloorComponent.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="Level.hpp" />
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="TextureManager.hpp" />
+    <ClInclude Include="TextureResource.hpp" />
     <ClInclude Include="TimerJumper.h" />
+    <ClInclude Include="Util.hpp" />
     <ClInclude Include="Vec.h" />
+    <ClInclude Include="WallComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Game.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

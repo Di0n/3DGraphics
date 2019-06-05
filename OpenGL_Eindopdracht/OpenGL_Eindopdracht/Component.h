@@ -8,7 +8,7 @@ protected:
 
 public:
 	Component();
-	~Component();
+	virtual ~Component();
 
 	virtual void update(float elapsedTime) {};
 

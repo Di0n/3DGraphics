@@ -89,6 +89,10 @@ bool initGlut(int argc, char** argv)
 bool initOpenGL()
 {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glAlphaFunc(GL_GREATER, 0.5);
 
 	return true;
 }
