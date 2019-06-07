@@ -38,14 +38,8 @@ void PlayerComponent::update(float elapsedTime)
 	}
 	else if (prevKey == 0x20)
 	{
-		// Jump
-		
-		//camera->move(20, correctedSpeed);
-		//gameObject->position.y += correctedSpeed;
 		gameObject->velocity.y = 4.0f; //= Vec3f(0,2.0f, 0);
 		
-		//camera->moveUp(correctedSpeed * 40);
-		//gameObject->getComponent<Grav
 		prevKey = 0;
 	}
 	if (Game::keys['z'])
@@ -59,19 +53,14 @@ void PlayerComponent::update(float elapsedTime)
 	}
 	if (Game::keys['w'])
 	{
-		//gameObject->position.z -= correctedSpeed;
-		//camera->move(90, correctedSpeed);
 		float xVel = -(float)cos((cam->rotY + 90) / 180 * M_PI) * correctedSpeed;
 		float zVel = -(float)sin((cam->rotY + 90) / 180 * M_PI) * correctedSpeed;
 		gameObject->velocity.x += xVel ;
 		gameObject->velocity.z += zVel ;
-		//std::cout << "XW: " << xVel << std::endl;
-		//std::cout << "ZW: " << zVel << std::endl;
 	}
 	if (Game::keys['s'])
 	{
-		//gameObject->position.z += correctedSpeed;
-		//camera->move(270, correctedSpeed);
+
 		if (gameObject->position.y < 0.01)
 		{
 			float xVel = -(float)cos((cam->rotY + 270) / 180 * M_PI) * correctedSpeed;
@@ -79,13 +68,11 @@ void PlayerComponent::update(float elapsedTime)
 			gameObject->velocity.x += xVel;
 			gameObject->velocity.z += zVel;
 		}
-		//std::cout << "XS: " << xVel << std::endl;
-		//std::cout << "ZS: " << zVel << std::endl;
+
 	}
 	if (Game::keys['a'])
 	{
-		//gameObject->position.x -= correctedSpeed;
-		//camera->move(0, correctedSpeed);
+
 		float xVel = -(float)cos((cam->rotY + 0) / 180 * M_PI) * correctedSpeed;
 		float zVel = -(float)sin((cam->rotY + 0) / 180 * M_PI) * correctedSpeed;
 		gameObject->velocity.x += xVel;
@@ -93,8 +80,7 @@ void PlayerComponent::update(float elapsedTime)
 	}
 	if (Game::keys['d'])
 	{
-		//gameObject->position.x += correctedSpeed;
-		//camera->move(180, correctedSpeed);
+
 		float xVel = -(float)cos((cam->rotY + 180) / 180 * M_PI) * correctedSpeed;
 		float zVel = -(float)sin((cam->rotY + 180) / 180 * M_PI) * correctedSpeed;
 		gameObject->velocity.x += xVel;
@@ -131,28 +117,6 @@ void PlayerComponent::update(float elapsedTime)
 	///gameObject->position.z = -(camPos.y - 0.8);
 
 	camera->moveUp(-gameObject->position.y);
-
-
-	//gameObject->velocity.x += (gameObject->velocity.x < 0) ? 0.01 : -0.01;
-	//gameObject->velocity.z += (gameObject->velocity.z < 0) ? 0.01 : -0.01;
-	
-
-
-
-
-	/*if (gameObject->velocity.x < 0.0)
-	{
-		float diff =  gameObject->velocity.x - 0.0;
-		if (diff != 0)
-			gameObject->velocity.x += diff / 10;
-	}
-	else if (gameObject->velocity.x > 0.0)
-	{
-		float diff = 
-	}
-	if (gameObject->velocity.z )*/
-
-	
 }
 
 void PlayerComponent::move(float angle, float speed)
