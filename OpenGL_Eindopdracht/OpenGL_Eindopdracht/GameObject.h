@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <string>
 #include "Vec.h"
 
 class Component;
@@ -19,7 +20,8 @@ public:
 	Vec3f position;
 	Vec3f rotation;
 	Vec3f scale = Vec3f(1,1,1);
-
+	Vec3f velocity;
+	std::string tag = "";
 
 	void addComponent(Component* component);
 	std::list<Component*> getComponents();

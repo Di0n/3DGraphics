@@ -96,6 +96,9 @@
     <ClCompile Include="Level.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="GravityComponent.cpp">
+      <Filter>Source Files\GameObjects\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="Level.hpp">
       <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="GravityComponent.hpp">
+      <Filter>Header Files\GameObjects\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

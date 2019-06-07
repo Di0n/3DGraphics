@@ -6,6 +6,7 @@
 #include "CubeComponent.h"
 #include "FloorComponent.hpp"
 #include "WallComponent.h"
+#include "GravityComponent.hpp"
 #include "Camera.hpp"
 #include "TextureManager.hpp"
 #include "TextureResource.hpp"
@@ -48,14 +49,16 @@ void Level::setup()
 	// PLAYER
 	GameObject* player = new GameObject();
 	player->addComponent(new PlayerComponent());
+	player->addComponent(new CubeComponent(0.3));
 	player->addComponent(new CameraComponent(camera));
 
-	player->position = Vec3f(0, 0, 0);
+	player->position = Vec3f(-camera->posX, 0, -camera->posY);
 
 	// TEST
 	GameObject* o = new GameObject();
+	o->tag = "CUBE";
 	o->addComponent(new CubeComponent(0.5));
-	o->position = Vec3f(0, 4, 0);
+	o->position = Vec3f(0, 4, 4);
 	
 	setupWalls();
 	setupFloor();

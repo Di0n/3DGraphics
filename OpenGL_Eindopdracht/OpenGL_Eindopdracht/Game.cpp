@@ -51,7 +51,9 @@ namespace Game
 	void update(float deltaTime)
 	{
 		for (const auto& o : objects)
+		{
 			o->update(deltaTime);
+		}
 	}
 	void draw()
 	{
@@ -96,7 +98,7 @@ namespace Game
 	void onKeyUp(Key key)
 	{
 		keys[key] = false;
-
+		
 		switch (key)
 		{
 		case VK_ESCAPE:

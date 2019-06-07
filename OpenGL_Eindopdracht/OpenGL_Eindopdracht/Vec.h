@@ -17,7 +17,12 @@ public:
 	Vec3f(float x, float y, float z);
 	float& operator [](int);
 
+	Vec3f operator-() const;
 	Vec3f operator - (const Vec3f &other);
+	Vec3f operator+(const Vec3f& v)const;
+	Vec3f& operator+=(const Vec3f& vec);
+	Vec3f operator*(float f) const;
+	Vec3f& operator*=(float f);
 
 	Vec3f normalized() const;
 	float length() const;
