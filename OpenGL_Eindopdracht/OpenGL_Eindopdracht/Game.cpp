@@ -1,9 +1,12 @@
 #include "Game.hpp"
 #include <list>
+#include <vector>
 #include <iostream>
 #include <GL\freeglut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string>
+#include <random>
 
 #include "TextureManager.hpp"
 #include "Camera.hpp"
@@ -13,46 +16,80 @@
 #include "PlayerComponent.h"
 #include "WallComponent.h"
 #include "FloorComponent.hpp"
+#include "MoveToComponent.h"
 #include "TextureResource.hpp"
 #include "Level.hpp"
+#include "FrameRateCounter.hpp"
+#include "Util.hpp"
 
+using std::string;
+using std::vector;
 namespace Game
 {
 	void setUpScene();
+	void spawnObstacle();
+	int obstacleCount;
+	const int MAX_OBSTACLES = 5000;
 
 	int windowWidth, windowHeight;
 	bool keys[256];
+	int keyModifiers;
+
 
 	TextureManager textureManager;
-	
+
 	// Active world camera
 	Camera camera;
 
+	FrameRateCounter frc;
 	// Game objects
-	std::list<GameObject*> objects;
-	
+	//std::list<GameObject*> objects;
+	vector<GameObject*> objects;
+
 	// Player object
 	GameObject* player;
 
-	
+
 	void loadContent()
 	{
 		ZeroMemory(keys, sizeof(keys));
-		
+
 		textureManager.addTextureSource(TEXTURE_WALL);
 		textureManager.addTextureSource(TEXTURE_FLOOR);
-		textureManager.addTextureSource(TEXTURE_TABLE);
+		textureManager.addTextureSource(TEXTURE_THWOMP);
+		textureManager.addTextureSource(TEXTURE_CASTLE);
 		textureManager.load();
 
-		camera = Camera(0,-4,0,0,0,0);
+		camera = Camera(0, -4, 0, 0, 0, 0);
 		Level level = Level(&camera, &objects, &textureManager);
 		level.setup();
 	}
 	void update(float deltaTime)
 	{
-		for (const auto& o : objects)
+		frc.update(deltaTime);
+
+		vector<GameObject*>::iterator itr = objects.begin();
+
+		while (itr != objects.end())
 		{
+			auto o = (*itr);
+			if (o->tag == "OBSTACLE")
+			{
+				if (o->position.x <= -15)
+				{
+					obstacleCount--;
+					itr = objects.erase(itr);
+					delete o;
+					continue;
+				}
+			}
 			o->update(deltaTime);
+			++itr;
+		}
+
+		if (obstacleCount < MAX_OBSTACLES)
+		{
+			spawnObstacle();
 		}
 	}
 	void draw()
@@ -65,7 +102,13 @@ namespace Game
 
 		glColor3f(0.5f, 0.8f, 0.2f);
 		for (const auto& o : objects)
-			o->draw(); 
+			o->draw();
+
+
+		float avgFrames = frc.getAverageFramesPerSecond();
+		string avgStr = std::to_string(avgFrames);
+		string fps = "FPS: " + avgStr.substr(0, avgStr.find_last_of('.'));
+		Util::drawText(Util::Color4(255, 255, 255, 1), Vec2f(20, windowHeight - 40), windowWidth, windowHeight, fps);
 
 		// Floor
 		/*glColor3f(0.1f, 1.0f, 0.2f);
@@ -82,23 +125,52 @@ namespace Game
 
 
 
-		//glBegin(GL_QUADS);
-		//glVertex3f(-15, -1, -15);
-		//glVertex3f(15, -1, -15);
-		//glVertex3f(15, -1, 15);
-		//glVertex3f(-15, -1, 15);
-		//glEnd();
+			//glBegin(GL_QUADS);
+			//glVertex3f(-15, -1, -15);
+			//glVertex3f(15, -1, -15);
+			//glVertex3f(15, -1, 15);
+			//glVertex3f(-15, -1, 15);
+			//glEnd();
+	}
+
+	int getRandomNumber()
+	{
+		thread_local static std::mt19937 rg{ std::random_device{}() };
+		thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, 12);
+		return pick(rg);
+	}
+	void spawnObstacle()
+	{
+		GameObject* obstacle = new GameObject();
+		obstacle->tag = "OBSTACLE";
+		float randomZ = getRandomNumber();
+
+		obstacle->position = Vec3f(30, -0.5f, randomZ);
+		//obstacle->addComponent(new CubeComponent(0.25f));
+		GLuint texture;
+		textureManager.getTexture(TEXTURE_THWOMP, &texture);
+		obstacle->addComponent(new WallComponent(0.5f, texture));
+		MoveToComponent* m = new MoveToComponent();
+		m->target = Vec3f(-20, -0.5f, randomZ);
+		m->speed = 5;
+		obstacle->rotation = Vec3f(0, 90, 0);
+		obstacle->addComponent(m);
+		obstacleCount++;
+		objects.push_back(obstacle);
 	}
 
 	void onKey(Key key)
 	{
 		keys[key] = true;
+		keyModifiers = glutGetModifiers();
 	}
 
 	void onKeyUp(Key key)
 	{
 		keys[key] = false;
-		
+		keyModifiers = 0;
+		//memset(keysJustUp, 0, sizeof(keysJustUp));
+
 		switch (key)
 		{
 		case VK_ESCAPE:
@@ -124,7 +196,11 @@ namespace Game
 		{
 			camera.rotY += dx / 10.0f;
 			camera.rotX += dy / 10.0f;
-			glutWarpPointer(windowWidth / 2, windowHeight / 2);
+			const int centerX = windowWidth / 2;
+			const int centerY = windowHeight / 2;
+
+			if (x != centerX || y != centerY)
+				glutWarpPointer(centerX, centerY);
 			justMoved = true;
 		}
 	}
@@ -145,15 +221,6 @@ namespace Game
 		std::cout << "Closing game.\n";
 	}
 
-	void createWalls()
-	{
-
-	}
-
-	void createFloor()
-	{
-
-	}
 	void setUpScene()
 	{
 		camera = Camera(0, -4, 0, 0, 0, 0);

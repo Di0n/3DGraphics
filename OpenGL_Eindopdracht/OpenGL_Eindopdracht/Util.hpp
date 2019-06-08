@@ -1,19 +1,13 @@
 #pragma once
 #include <string>
-#include <Windows.h>
+class Vec2f;
 namespace Util
 {
-	std::string getExePath()
+	struct Color4
 	{
-		HMODULE handle = GetModuleHandle(NULL);
-
-		if (handle == NULL)
-			return "";
-		char path[MAX_PATH];
-		GetModuleFileName(handle, path, (sizeof(path)));
-		std::string pathStr = std::string(path);
-		const size_t index = pathStr.find_last_of("/\\");
-
-		return pathStr.substr(0, index);
-	}
+		float r, g, b, a;
+		Color4(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
+	};
+	std::string getExePath();
+	void drawText(const Color4& clr, const Vec2f& pos, int windowWidth, int windowHeight, const std::string& text);
 }

@@ -10,8 +10,8 @@
 #define OPENGL_INIT_FAILED 2
 
 #define APP_NAME "Game"
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 2560
+#define WINDOW_HEIGHT 1440
 
 
 int windowWidth;
@@ -41,7 +41,7 @@ void mousePassiveMotion(int x, int y)
 
 void display()
 {
-	glClearColor(0, 0, 0, 0);
+	glClearColor(52.0f /255.0f, 80.0f /255.0f, 92.0f/255.0f, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_PROJECTION);
@@ -82,6 +82,8 @@ bool initGlut(int argc, char** argv)
 	glutKeyboardUpFunc(keyboardup);
 	glutPassiveMotionFunc(mousePassiveMotion);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	glutSetCursor(GLUT_CURSOR_NONE);
+	glutFullScreen();
 
 	return true;
 }

@@ -5,6 +5,7 @@ namespace Game
 {
 	// Needs to be publicly available for modules etc.
 	extern bool keys[256];
+	extern int keyModifiers;
 	// Gets called when the engine is ready to load in content / initialize.
 	void loadContent();
 	// Gets called every frame for game logic.

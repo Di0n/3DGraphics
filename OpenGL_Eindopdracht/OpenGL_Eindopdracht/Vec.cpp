@@ -68,7 +68,7 @@ Vec3f Vec3f::normalized() const
 
 float Vec3f::length() const
 {
-	return sqrt(x*x+y*y+z*z);
+	return sqrtf(x*x+y*y+z*z);
 }
 
 

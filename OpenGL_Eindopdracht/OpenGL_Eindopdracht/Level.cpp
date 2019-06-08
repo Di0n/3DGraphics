@@ -28,46 +28,53 @@ void Level::setupFloor()
 	GLuint textureID;
 	textureManager->getTexture(TEXTURE_FLOOR, &textureID);
 	
-	int x = 0;
 	const float size = 1;
-	for (int i = 0 + (size*2); i < (5 + (size*2)); i+= (size*2))
+	const float rows = 8;
+	const float colums = 10;
+	for (float i = 0 + (size*2); i < (rows + (size*2)); i+= (size*2))
 	{
-		for (int j = -10; j < (10+(size*2)); j+=(size*2))
+		for (float j = -colums; j < (colums+(size*2)); j+=(size*2))
 		{
-			//if (x++ == 2) goto LOL;
 			GameObject* floor = new GameObject();
 			floor->addComponent(new FloorComponent(size, textureID));
-			floor->position = Vec3f((float)j, 0, (float)i);
+			floor->position = Vec3f(j, 0, i);
 
 			objects->push_back(floor);
 		}
 	}
-//LOL:;
 }
 void Level::setup()
 {
 	// PLAYER
 	GameObject* player = new GameObject();
 	player->addComponent(new PlayerComponent());
-	player->addComponent(new CubeComponent(0.3));
+	//player->addComponent(new CubeComponent(0.3f));
 	player->addComponent(new CameraComponent(camera));
 
-	player->position = Vec3f(-camera->posX, 0, -camera->posY);
+	player->position = Vec3f(-6 ,0, 4);
 
 	// TEST
-	GameObject* o = new GameObject();
+	/*GameObject* o = new GameObject();
 	o->tag = "CUBE";
 	o->addComponent(new CubeComponent(0.5));
-	o->position = Vec3f(0, 4, 4);
+	o->position = Vec3f(0, 4, 4);*/
 	
 	setupWalls();
 	setupFloor();
+
 	GLuint textureID;
+	bool v = textureManager->getTexture(TEXTURE_CASTLE, &textureID);
+	GameObject* wallObject = new GameObject();
+	wallObject->addComponent(new WallComponent(20, textureID));
+	wallObject->position = Vec3f(10, 8, 5);
+	wallObject->rotation = Vec3f(0, 90, 0);
+	objects->push_back(wallObject);
+
 	// TABLE
 	//textureManager->getTexture(TEXTURE_TABLE, &textureID);
 	//GameObject* table = new GameObject();
 
 
-	objects->push_back(o);
+	//objects->push_back(o);
 	objects->push_back(player);
 }
