@@ -7,6 +7,7 @@
 #include "FloorComponent.hpp"
 #include "WallComponent.h"
 #include "GravityComponent.hpp"
+#include "SphereComponent.hpp"
 #include "Camera.hpp"
 #include "TextureManager.hpp"
 #include "TextureResource.hpp"
@@ -14,8 +15,7 @@
 void Level::setupWalls()
 {
 	// BACK WALLS
-	GLuint textureID;
-	textureManager->getTexture(TEXTURE_WALL, &textureID);
+	GLuint textureID = textureManager->getTexture(TEXTURE_WALL);
 	GameObject* wallObject = new GameObject();
 	wallObject->addComponent(new WallComponent(1, textureID));
 	wallObject->position = Vec3f(0, 0, 0);
@@ -25,8 +25,7 @@ void Level::setupWalls()
 void Level::setupFloor()
 {
 	// FLOOR
-	GLuint textureID;
-	textureManager->getTexture(TEXTURE_FLOOR, &textureID);
+	GLuint textureID = textureManager->getTexture(TEXTURE_FLOOR);
 	
 	const float size = 1;
 	const float rows = 8;
@@ -62,14 +61,24 @@ void Level::setup()
 	setupWalls();
 	setupFloor();
 
-	GLuint textureID;
-	bool v = textureManager->getTexture(TEXTURE_CASTLE, &textureID);
+	GLuint textureID = textureManager->getTexture(TEXTURE_CASTLE);
 	GameObject* wallObject = new GameObject();
 	wallObject->addComponent(new WallComponent(20, textureID));
 	wallObject->position = Vec3f(10, 8, 5);
 	wallObject->rotation = Vec3f(0, 90, 0);
 	objects->push_back(wallObject);
 
+	//textureManager->getTexture(TEXTURE_BALL, &textureID);
+	//GameObject* sphere = new GameObject();
+	//sphere->addComponent(new SphereComponent(1.0f, textureID));
+	//sphere->position = Vec3f(-4, 0, 4);
+	//objects->push_back(sphere);
+
+	textureID = textureManager->getTexture(TEXTURE_BOX);
+	GameObject* box = new GameObject();
+	box->addComponent(new CubeComponent(0.8f, textureID));
+	box->position = Vec3f(-4, 0, 4);
+	objects->push_back(box);
 	// TABLE
 	//textureManager->getTexture(TEXTURE_TABLE, &textureID);
 	//GameObject* table = new GameObject();

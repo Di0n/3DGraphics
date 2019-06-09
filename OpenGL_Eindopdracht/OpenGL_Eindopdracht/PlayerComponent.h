@@ -17,8 +17,8 @@ private:
 	const float ANGLE_S			= 270;
 	const float ANGLE_D			= 180;
 
-	float speed		= 50;
-	float runSpeed	= 90;
+	float speed = 50;//50;
+	float runSpeed = 90;//90;
 
 	void move(Camera* cam, float angle, float speed);
 	void handleInput(float elapsedTime, Camera* cam);

@@ -26,7 +26,7 @@ void TextureManager::addTextureSource(const std::string& file)
 {
 	textureFiles.push_back(file);
 }
-bool TextureManager::loadTexture(const std::string& fileName, int textureID)
+bool TextureManager::loadTexture(const std::string& fileName, GLuint textureID)
 {
 	int w, h, bpp;
 	stbi_set_flip_vertically_on_load(1);
@@ -54,15 +54,14 @@ bool TextureManager::loadTexture(const std::string& fileName, int textureID)
 
 	return true;
 }
-bool TextureManager::getTexture(const std::string& name, GLuint* texture)
+GLuint TextureManager::getTexture(const std::string& name)
 {
 	for (int i = 0; i < textureFiles.size(); i++)
 	{
 		if (textureFiles[i] == name)
 		{
-			*texture = textures[i];
-			return true;
+			return textures[i];
 		}
 	}
-	return false;
+	return 0;
 }

@@ -19,6 +19,7 @@
 #include "MoveToComponent.h"
 #include "TextureResource.hpp"
 #include "Level.hpp"
+#include "Scene.hpp"
 #include "FrameRateCounter.hpp"
 #include "Util.hpp"
 
@@ -29,7 +30,7 @@ namespace Game
 	void setUpScene();
 	void spawnObstacle();
 	int obstacleCount;
-	const int MAX_OBSTACLES = 5000;
+	const int MAX_OBSTACLES = 5;
 
 	int windowWidth, windowHeight;
 	bool keys[256];
@@ -58,11 +59,16 @@ namespace Game
 		textureManager.addTextureSource(TEXTURE_FLOOR);
 		textureManager.addTextureSource(TEXTURE_THWOMP);
 		textureManager.addTextureSource(TEXTURE_CASTLE);
+		textureManager.addTextureSource(TEXTURE_BALL);
+		textureManager.addTextureSource(TEXTURE_BOX);
+
 		textureManager.load();
 
 		camera = Camera(0, -4, 0, 0, 0, 0);
-		Level level = Level(&camera, &objects, &textureManager);
-		level.setup();
+		//Level level = Level(&camera, &objects, &textureManager);
+		//level.setup();
+		Scene scene(&camera, &objects, &textureManager);
+		scene.setup();
 	}
 	void update(float deltaTime)
 	{
@@ -92,18 +98,29 @@ namespace Game
 			spawnObstacle();
 		}
 	}
+	float fogCol[3] = { 0.8f, 0.8f, 0.8f };
 	void draw()
 	{
 		// Camera view
 		glRotatef(camera.rotX, 1, 0, 0);
 		glRotatef(camera.rotY, 0, 1, 0);
 		glTranslatef(camera.posX, camera.posZ, camera.posY);
-
-
+		
 		glColor3f(0.5f, 0.8f, 0.2f);
+		// Mist
+		//glEnable(GL_FOG);
+		
+		//glFogfv(GL_FOG_COLOR, fogCol);
+		//glFogi(GL_FOG_MODE, GL_LINEAR);
+
+		//glFogf(GL_FOG_START, 10.0f);
+		//glFogf(GL_FOG_END, 40.0f);
+
+		
 		for (const auto& o : objects)
 			o->draw();
 
+		//glDisable(GL_FOG);
 
 		float avgFrames = frc.getAverageFramesPerSecond();
 		string avgStr = std::to_string(avgFrames);
@@ -147,8 +164,7 @@ namespace Game
 
 		obstacle->position = Vec3f(30, -0.5f, randomZ);
 		//obstacle->addComponent(new CubeComponent(0.25f));
-		GLuint texture;
-		textureManager.getTexture(TEXTURE_THWOMP, &texture);
+		GLuint texture = textureManager.getTexture(TEXTURE_THWOMP);
 		obstacle->addComponent(new WallComponent(0.5f, texture));
 		MoveToComponent* m = new MoveToComponent();
 		m->target = Vec3f(-20, -0.5f, randomZ);

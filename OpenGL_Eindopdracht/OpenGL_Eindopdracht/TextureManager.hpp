@@ -12,12 +12,12 @@ public:
 	~TextureManager() {};
 
 	void load();
-	bool getTexture(const std::string& name, GLuint* texture);
+	GLuint getTexture(const std::string& name);
 	void addTextureSource(const std::string& file);
 private:
 	GLuint* textures;
 	std::vector<std::string> textureFiles;
-	bool loadTexture(const std::string& fileName, int textureID);
+	bool loadTexture(const std::string& fileName, GLuint textureID);
 	std::string texturePath;
 };
 

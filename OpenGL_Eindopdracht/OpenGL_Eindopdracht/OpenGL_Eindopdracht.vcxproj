@@ -133,6 +133,9 @@
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SlabComponent.cpp" />
+    <ClCompile Include="SphereComponent.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TimerJumper.cpp" />
@@ -156,6 +159,9 @@
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="SlabComponent.hpp" />
+    <ClInclude Include="SphereComponent.hpp" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureManager.hpp" />
