@@ -17,14 +17,18 @@
 #include "WallComponent.h"
 #include "FloorComponent.hpp"
 #include "MoveToComponent.h"
+#include "HitboxComponent.hpp"
 #include "TextureResource.hpp"
 #include "Level.hpp"
 #include "Scene.hpp"
 #include "FrameRateCounter.hpp"
+#include "Tags.hpp"
 #include "Util.hpp"
 
 using std::string;
 using std::vector;
+using std::cout;
+using std::endl;
 namespace Game
 {
 	void setUpScene();
@@ -49,6 +53,7 @@ namespace Game
 
 	// Player object
 	GameObject* player;
+	HitboxComponent* playerHitbox;
 
 
 	void loadContent()
@@ -63,13 +68,41 @@ namespace Game
 		textureManager.addTextureSource(TEXTURE_BOX);
 
 		textureManager.load();
-
+		
 		camera = Camera(0, -4, 0, 0, 0, 0);
 		//Level level = Level(&camera, &objects, &textureManager);
 		//level.setup();
 		Scene scene(&camera, &objects, &textureManager);
 		scene.setup();
+		for (auto o : objects)
+		{
+			if (o->tag == Tags::PLAYER)	
+			{
+				player = o;
+				playerHitbox = player->getComponent<HitboxComponent>();
+				break;
+			}
+		}
 	}
+
+	bool collided(GameObject* o)
+	{
+		/*auto c = o->getComponent<CubeComponent>();
+		float size = 0.5f;
+		bool colX = o->position.x + size >= player->position.x
+			&& player->position.x + 1.0f >= o->position.x;
+		bool coly = o->position.y + size >= player->position.y
+			&& player->position.y + 1.0f >= o->position.y;
+		bool colz = o->position.z + size >= player->position.z
+			&& player->position.z + 1.0f >= o->position.z;
+
+		return colX && coly && colz;*/
+
+		return false;
+	}
+
+	long long hitcount = 0;
+	int spawn = 0;
 	void update(float deltaTime)
 	{
 		frc.update(deltaTime);
@@ -79,7 +112,7 @@ namespace Game
 		while (itr != objects.end())
 		{
 			auto o = (*itr);
-			if (o->tag == "OBSTACLE")
+			if (o->tag == Tags::OBSTACLE)
 			{
 				if (o->position.x <= -15)
 				{
@@ -88,14 +121,42 @@ namespace Game
 					delete o;
 					continue;
 				}
+				auto hitbox = o->getComponent<HitboxComponent>();
+				if (hitbox->collided(playerHitbox))
+				{
+					cout << "Hit: " << hitcount++ << endl;
+				}
+			}
+			else if (o->tag == "BALL")
+			{
+				o->position += o->velocity * deltaTime;
+
+				if (o->position.y <= 0)
+				{
+					o->velocity.y *= -1;
+				}
+				else if (o->position.y > 20)
+				{
+					o->velocity.y *= -1;
+				}
+				if (o->position.x < -20)
+					o->velocity.x *= -1;
+				else if (o->position.x > 20)
+					o->velocity.x *= -1;
+				if (o->position.z< -20)
+					o->velocity.z *= -1;
+				else if (o->position.z > 20)
+					o->velocity.z *= -1;
 			}
 			o->update(deltaTime);
 			++itr;
+			spawn++;
 		}
 
-		if (obstacleCount < MAX_OBSTACLES)
+		if (obstacleCount < MAX_OBSTACLES && spawn  > 20000)
 		{
 			spawnObstacle();
+			spawn = 0;
 		}
 	}
 	float fogCol[3] = { 0.8f, 0.8f, 0.8f };
@@ -106,16 +167,17 @@ namespace Game
 		glRotatef(camera.rotY, 0, 1, 0);
 		glTranslatef(camera.posX, camera.posZ, camera.posY);
 		
-		glColor3f(0.5f, 0.8f, 0.2f);
+		//glColor3f(0.5f, 0.8f, 0.2f);
 		// Mist
-		//glEnable(GL_FOG);
+		/*
+		glEnable(GL_FOG);
 		
-		//glFogfv(GL_FOG_COLOR, fogCol);
-		//glFogi(GL_FOG_MODE, GL_LINEAR);
+		glFogfv(GL_FOG_COLOR, fogCol);
+		glFogi(GL_FOG_MODE, GL_LINEAR);
 
-		//glFogf(GL_FOG_START, 10.0f);
-		//glFogf(GL_FOG_END, 40.0f);
-
+		glFogf(GL_FOG_START, 2.0f);
+		glFogf(GL_FOG_END, 60.0f);
+		*/
 		
 		for (const auto& o : objects)
 			o->draw();
@@ -140,7 +202,7 @@ namespace Game
 		for (const auto& o : objects)
 			o->draw();*/
 
-
+		
 
 			//glBegin(GL_QUADS);
 			//glVertex3f(-15, -1, -15);
@@ -153,19 +215,21 @@ namespace Game
 	int getRandomNumber()
 	{
 		thread_local static std::mt19937 rg{ std::random_device{}() };
-		thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, 12);
+		thread_local static std::uniform_int_distribution<std::string::size_type> pick(1, 7);
 		return pick(rg);
 	}
 	void spawnObstacle()
 	{
 		GameObject* obstacle = new GameObject();
-		obstacle->tag = "OBSTACLE";
+		obstacle->tag = Tags::OBSTACLE;
 		float randomZ = getRandomNumber();
 
 		obstacle->position = Vec3f(30, -0.5f, randomZ);
 		//obstacle->addComponent(new CubeComponent(0.25f));
-		GLuint texture = textureManager.getTexture(TEXTURE_THWOMP);
-		obstacle->addComponent(new WallComponent(0.5f, texture));
+		GLuint texture = textureManager.getTexture(TEXTURE_BOX);
+		//obstacle->addComponent(new WallComponent(0.5f, texture));
+		obstacle->addComponent(new CubeComponent(0.5f, texture));
+		obstacle->addComponent(new HitboxComponent(0.5f, 0.5f, 0.5f));
 		MoveToComponent* m = new MoveToComponent();
 		m->target = Vec3f(-20, -0.5f, randomZ);
 		m->speed = 5;

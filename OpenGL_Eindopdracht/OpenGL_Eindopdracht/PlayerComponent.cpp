@@ -50,7 +50,7 @@ void PlayerComponent::update(float elapsedTime)
 	}
 	
 	cam->posX = -gameObject->position.x;
-	cam->posY = -(gameObject->position.z + 0.8f);
+	cam->posY = -(gameObject->position.z );
 	cam->posZ = -gameObject->position.y;
 	///gameObject->position.x = -(camPos.x + 0.0);
 	///gameObject->position.z = -(camPos.y - 0.8);
@@ -63,7 +63,7 @@ void PlayerComponent::handleInput(float elapsedTime, Camera* cam)
 
 	float correctedSpeed = elapsedTime * ((shiftPressed < 0) ? runSpeed : speed);
 
-	if (Game::keys[VK_SPACE])
+	if (Game::keys[VK_SPACE] && gameObject->position.y < MIN_HEIGHT_MOVE)
 	{
 		prevKey = VK_SPACE;
 	}
