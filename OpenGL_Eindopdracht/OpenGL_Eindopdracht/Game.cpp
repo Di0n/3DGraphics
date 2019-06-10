@@ -17,6 +17,7 @@
 #include "WallComponent.h"
 #include "FloorComponent.hpp"
 #include "MoveToComponent.h"
+#include "AudioComponent.hpp"
 #include "HitboxComponent.hpp"
 #include "TextureResource.hpp"
 #include "Level.hpp"
@@ -24,24 +25,25 @@
 #include "FrameRateCounter.hpp"
 #include "Tags.hpp"
 #include "Util.hpp"
-
+#include "SoundPlayer.hpp"
+#include "MusicResources.hpp"
+#include "ObjectSpawner.hpp"
 using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
 namespace Game
 {
-	void setUpScene();
 	void spawnObstacle();
-	int obstacleCount;
-	const int MAX_OBSTACLES = 5;
+	const int MAX_OBSTACLES = 20;
 
 	int windowWidth, windowHeight;
 	bool keys[256];
 	int keyModifiers;
-
-
+	
 	TextureManager textureManager;
+
+	SoundPlayer* soundPlayer;
 
 	// Active world camera
 	Camera camera;
@@ -55,6 +57,8 @@ namespace Game
 	GameObject* player;
 	HitboxComponent* playerHitbox;
 
+	int obstacleCount;
+	const float DESPAWN_POS = 5.0f;
 
 	void loadContent()
 	{
@@ -69,36 +73,25 @@ namespace Game
 
 		textureManager.load();
 		
+		soundPlayer = &SoundPlayer::getInstance();
+		soundPlayer->addSound(MusicResources::DEATH_SOUND, Tags::DEATH_SOUND, true);
+		//soundPlayer->addSound(MusicResources::DEATH_SOUND, "TEST", true);
+
 		camera = Camera(0, -4, 0, 0, 0, 0);
+
 		//Level level = Level(&camera, &objects, &textureManager);
 		//level.setup();
 		Scene scene(&camera, &objects, &textureManager);
 		scene.setup();
 		for (auto o : objects)
 		{
-			if (o->tag == Tags::PLAYER)	
+			if (o->tag == Tags::PLAYER)
 			{
 				player = o;
 				playerHitbox = player->getComponent<HitboxComponent>();
 				break;
 			}
 		}
-	}
-
-	bool collided(GameObject* o)
-	{
-		/*auto c = o->getComponent<CubeComponent>();
-		float size = 0.5f;
-		bool colX = o->position.x + size >= player->position.x
-			&& player->position.x + 1.0f >= o->position.x;
-		bool coly = o->position.y + size >= player->position.y
-			&& player->position.y + 1.0f >= o->position.y;
-		bool colz = o->position.z + size >= player->position.z
-			&& player->position.z + 1.0f >= o->position.z;
-
-		return colX && coly && colz;*/
-
-		return false;
 	}
 
 	long long hitcount = 0;
@@ -114,7 +107,7 @@ namespace Game
 			auto o = (*itr);
 			if (o->tag == Tags::OBSTACLE)
 			{
-				if (o->position.x <= -15)
+				if (o->position.x < (player->position.x - DESPAWN_POS))
 				{
 					obstacleCount--;
 					itr = objects.erase(itr);
@@ -125,7 +118,13 @@ namespace Game
 				if (hitbox->collided(playerHitbox))
 				{
 					cout << "Hit: " << hitcount++ << endl;
+					auto ac = player->getComponent<AudioComponent>();
+					ac->playSound(false);
 				}
+			}
+			else if (o == player)
+			{
+				soundPlayer->setListenerPosition(player->position, player->rotation);
 			}
 			else if (o->tag == "BALL")
 			{
@@ -211,32 +210,29 @@ namespace Game
 			//glVertex3f(-15, -1, 15);
 			//glEnd();
 	}
-
-	int getRandomNumber()
-	{
-		thread_local static std::mt19937 rg{ std::random_device{}() };
-		thread_local static std::uniform_int_distribution<std::string::size_type> pick(1, 7);
-		return pick(rg);
-	}
+	
 	void spawnObstacle()
 	{
-		GameObject* obstacle = new GameObject();
-		obstacle->tag = Tags::OBSTACLE;
-		float randomZ = getRandomNumber();
-
-		obstacle->position = Vec3f(30, -0.5f, randomZ);
-		//obstacle->addComponent(new CubeComponent(0.25f));
-		GLuint texture = textureManager.getTexture(TEXTURE_BOX);
-		//obstacle->addComponent(new WallComponent(0.5f, texture));
-		obstacle->addComponent(new CubeComponent(0.5f, texture));
-		obstacle->addComponent(new HitboxComponent(0.5f, 0.5f, 0.5f));
-		MoveToComponent* m = new MoveToComponent();
-		m->target = Vec3f(-20, -0.5f, randomZ);
-		m->speed = 5;
-		obstacle->rotation = Vec3f(0, 90, 0);
-		obstacle->addComponent(m);
+		static ObjectSpawner spawner = ObjectSpawner(&textureManager);
+		objects.push_back(spawner.spawnRandomObstacle(player->position.x + 30));
 		obstacleCount++;
-		objects.push_back(obstacle);
+		//GameObject* obstacle = new GameObject();
+		//obstacle->tag = Tags::OBSTACLE;
+		//float randomZ = 2; //Util::getRandomNumber<int>(2, 6);
+
+		//obstacle->position = Vec3f(30, -0.5f, randomZ);
+		////obstacle->addComponent(new CubeComponent(0.25f));
+		//GLuint texture = textureManager.getTexture(TEXTURE_BOX);
+		////obstacle->addComponent(new WallComponent(0.5f, texture));
+		//obstacle->addComponent(new CubeComponent(0.5f, texture));
+		//obstacle->addComponent(new HitboxComponent(0.5f, 0.5f, 0.5f));
+		//MoveToComponent* m = new MoveToComponent();
+		//m->target = Vec3f(-20, -0.5f, randomZ);
+		//m->speed = 5;
+		//obstacle->rotation = Vec3f(0, 90, 0);
+		//obstacle->addComponent(m);
+		//obstacleCount++;
+		//objects.push_back(obstacle);
 	}
 
 	void onKey(Key key)
@@ -255,6 +251,8 @@ namespace Game
 		{
 		case VK_ESCAPE:
 			glutLeaveMainLoop();
+			break;
+		case 'z':
 			break;
 		default:
 			break;
@@ -299,46 +297,5 @@ namespace Game
 		objects.clear();
 
 		std::cout << "Closing game.\n";
-	}
-
-	void setUpScene()
-	{
-		camera = Camera(0, -4, 0, 0, 0, 0);
-
-		//// PLAYER
-		//player = new GameObject();
-		//player->addComponent(new PlayerComponent());
-		//player->addComponent(new CameraComponent(&camera));
-
-		//player->position = Vec3f(0, 0, 0);
-
-		//// TEST
-		//GameObject* o = new GameObject();
-		//o->addComponent(new CubeComponent(0.5));
-		//o->position = Vec3f(0, 4, 0);
-
-		//// BACK WALLS
-		//GLuint textureID;
-		//textureManager.getTexture(TEXTURE_WALL, &textureID);
-		//GameObject* wallObject = new GameObject();
-		//wallObject->addComponent(new WallComponent(1, textureID));
-		//wallObject->position = Vec3f(0, 0, 0);
-
-		//// FLOOR
-		//textureManager.getTexture(TEXTURE_FLOOR, &textureID);
-		//GameObject* floor = new GameObject();
-		//floor->addComponent(new FloorComponent(1, textureID));
-		//floor->position = Vec3f(0, 0, 2);
-
-		//// TABLE
-		//textureManager.getTexture(TEXTURE_TABLE, &textureID);
-		//GameObject* table = new GameObject();
-
-		//
-
-		//objects.push_back(o);
-		//objects.push_back(wallObject);
-		//objects.push_back(floor);
-		//objects.push_back(player);
 	}
 }

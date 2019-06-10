@@ -12,6 +12,7 @@
 #define APP_NAME "Game"
 #define WINDOW_WIDTH 2560
 #define WINDOW_HEIGHT 1440
+#define FULLSCREEN
 
 
 int windowWidth;
@@ -85,8 +86,9 @@ bool initGlut(int argc, char** argv)
 	glutPassiveMotionFunc(mousePassiveMotion);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutSetCursor(GLUT_CURSOR_NONE);
-	//glutFullScreen();
-
+#ifdef FULLSCREEN
+	glutFullScreen();
+#endif // FULLSCREEN
 	return true;
 }
 

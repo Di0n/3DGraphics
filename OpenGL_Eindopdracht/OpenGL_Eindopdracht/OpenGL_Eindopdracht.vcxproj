@@ -76,10 +76,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)freeglut\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)freeglut\include;$(SolutionDir)irrKlang-1.6.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)freeglut\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)freeglut\lib;$(SolutionDir)irrKlang-1.6.0\lib\Win32-visualStudio</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,6 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CubeComponent.cpp" />
@@ -132,10 +133,12 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
+    <ClCompile Include="ObjectSpawner.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SlabComponent.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="SphereComponent.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -145,6 +148,7 @@
     <ClCompile Include="WallComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioComponent.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="CameraComponent.hpp" />
     <ClInclude Include="Component.h" />
@@ -159,10 +163,13 @@
     <ClInclude Include="HitboxComponent.hpp" />
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="MoveToComponent.h" />
+    <ClInclude Include="MusicResources.hpp" />
+    <ClInclude Include="ObjectSpawner.hpp" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="SlabComponent.hpp" />
+    <ClInclude Include="SoundPlayer.hpp" />
     <ClInclude Include="SphereComponent.hpp" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="stb_image.h" />

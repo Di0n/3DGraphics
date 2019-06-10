@@ -1,6 +1,7 @@
 #include "Util.hpp"
 #include <GL\freeglut.h>
 #include <Windows.h>
+#include <random>
 #include "Vec.h"
 namespace Util
 {
@@ -36,5 +37,13 @@ namespace Util
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 	}
+
+	//template<typename T>
+	/*T getRandomNumber(T min, T max)
+	{
+		static thread_local std::mt19937 rng;
+		std::uniform_int_distribution<T> distributor(min, max);
+		return distributor(rng);
+	}*/
 
 }

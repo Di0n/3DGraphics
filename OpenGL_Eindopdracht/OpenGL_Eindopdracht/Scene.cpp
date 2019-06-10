@@ -12,18 +12,24 @@
 #include "CubeComponent.h"
 #include "SphereComponent.hpp"
 #include "HitboxComponent.hpp"
+#include "AudioComponent.hpp"
 #include "Tags.hpp"
 
 void Scene::setup()
 {
+	// CAMERA
+	camera->rotY = 120;
 	// PLAYER
 	GameObject* player = new GameObject();
 	player->tag = Tags::PLAYER;
 	player->addComponent(new PlayerComponent());
 	//player->addComponent(new CubeComponent(0.3f,5));
 	player->addComponent(new CameraComponent(camera));
-	player->addComponent(new HitboxComponent(0.3f, 0.3f, 0.3f));
+	const float playerHitbox = 0.3f;
+	player->addComponent(new HitboxComponent(playerHitbox, playerHitbox, playerHitbox));
+	player->addComponent(new AudioComponent(Tags::DEATH_SOUND));
 	player->position = Vec3f(-6, 0, 4);
+	//player->rotation = Vec3f(0, 0, 240);
 	objects->push_back(player);
 
 	setupFloor();
@@ -36,6 +42,42 @@ void Scene::setupWalls()
 	// Walls
 	GLuint textureID = textureManager->getTexture(TEXTURE_WALL);
 	
+	const float size = 1;
+	const float walls = 90;
+	const float startingPosWalls = -10;
+	const float area = size * 2;
+
+	// SIDE WALLS 1
+	for (float i = startingPosWalls; i < (walls + area); i+= area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(i,0,0);
+		objects->push_back(wall);
+	}
+	// BACK WALLS
+	const float startingPosBackWalls = 2;
+	const float backWalls = 5;
+	for (float i = startingPosBackWalls; i < (backWalls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(-10, 0, i);
+		wall->rotation = Vec3f(0,-90,0);
+		objects->push_back(wall);
+	}
+
+	// SIDE WALLS 2
+	for (float i = startingPosWalls ; i < (walls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(i, 0, 6);
+		objects->push_back(wall);
+	}
 	/*GameObject* w = new GameObject();
 
 	w->addComponent(new CubeComponent(25, textureID));
@@ -60,11 +102,11 @@ void Scene::setupFloor()
 	
 	const float size = 1;
 	const float rows = 5;
-	const float columns = 10;
-
+	const float columns = 90;
+	const float startColumn = -10;
 	for (float i = 0 + (size * 2); i < (rows + (size * 2)); i += (size * 2))
 	{
-		for (float j = -columns; j < (columns + (size * 2)); j += (size * 2))
+		for (float j = startColumn; j < (columns + (size * 2)); j += (size * 2))
 		{
 			GameObject* floor = new GameObject();
 			floor->tag = Tags::FLOOR;
