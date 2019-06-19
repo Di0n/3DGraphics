@@ -28,7 +28,7 @@ void Scene::setup()
 	const float playerHitbox = 0.3f;
 	player->addComponent(new HitboxComponent(playerHitbox, playerHitbox, playerHitbox));
 	player->addComponent(new AudioComponent(Tags::DEATH_SOUND));
-	player->position = Vec3f(-6, 0, 4);
+	player->position = Vec3f(90, 0, 4);
 	//player->rotation = Vec3f(0, 0, 240);
 	objects->push_back(player);
 
@@ -40,8 +40,8 @@ void Scene::setup()
 void Scene::setupWalls()
 {
 	// Walls
-	GLuint textureID = textureManager->getTexture(TEXTURE_WALL);
-	
+	GLuint textureID = textureManager->getTexture(TEXTURE_WALL_1);
+
 	const float size = 1;
 	const float walls = 90;
 	const float startingPosWalls = -10;
@@ -52,13 +52,23 @@ void Scene::setupWalls()
 	{
 		GameObject* wall = new GameObject();
 		wall->tag = Tags::WALL;
-		wall->addComponent(new SlabComponent(1, textureID));
+		wall->addComponent(new SlabComponent(size, textureID));
 		wall->position = Vec3f(i,0,0);
+		objects->push_back(wall);
+	}
+	// Side walls 1 top
+	for (float i = startingPosWalls; i < (walls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(size, textureID));
+		wall->position = Vec3f(i, area, 0);
 		objects->push_back(wall);
 	}
 	// BACK WALLS
 	const float startingPosBackWalls = 2;
 	const float backWalls = 5;
+
 	for (float i = startingPosBackWalls; i < (backWalls + area); i += area)
 	{
 		GameObject* wall = new GameObject();
@@ -69,6 +79,16 @@ void Scene::setupWalls()
 		objects->push_back(wall);
 	}
 
+	for (float i = startingPosBackWalls; i < (backWalls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(-10, area, i);
+		wall->rotation = Vec3f(0, -90, 0);
+		objects->push_back(wall);
+	}
+
 	// SIDE WALLS 2
 	for (float i = startingPosWalls ; i < (walls + area); i += area)
 	{
@@ -76,6 +96,37 @@ void Scene::setupWalls()
 		wall->tag = Tags::WALL;
 		wall->addComponent(new SlabComponent(1, textureID));
 		wall->position = Vec3f(i, 0, 6);
+		objects->push_back(wall);
+	}
+	// Side walls 2 top
+	for (float i = startingPosWalls; i < (walls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(i, area, 6);
+		objects->push_back(wall);
+	}
+
+	const float startingPosFinishWalls = 2;
+	const float finishWalls = 5;
+	for (float i = startingPosFinishWalls; i < (finishWalls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(90, 0, i);
+		wall->rotation = Vec3f(0, 90, 0);
+		objects->push_back(wall);
+	}
+
+	for (float i = startingPosFinishWalls; i < (finishWalls + area); i += area)
+	{
+		GameObject* wall = new GameObject();
+		wall->tag = Tags::WALL;
+		wall->addComponent(new SlabComponent(1, textureID));
+		wall->position = Vec3f(90, 0, i);
+		wall->rotation = Vec3f(0, 90, 0);
 		objects->push_back(wall);
 	}
 	/*GameObject* w = new GameObject();
@@ -98,7 +149,7 @@ void Scene::setupWalls()
 void Scene::setupFloor()
 {
 	// FLOOR
-	GLuint textureID = textureManager->getTexture(TEXTURE_FLOOR);
+	GLuint textureID = textureManager->getTexture(TEXTURE_SAND);
 	
 	const float size = 1;
 	const float rows = 5;
@@ -113,7 +164,6 @@ void Scene::setupFloor()
 			floor->addComponent(new SlabComponent(size, textureID));
 			floor->position = Vec3f(j, 0, i);
 			floor->rotation = Vec3f(90,0,0);
-
 			objects->push_back(floor);
 		}
 	}
@@ -121,5 +171,24 @@ void Scene::setupFloor()
 
 void Scene::setupCeiling()
 {
+	// ROOF
+	//GLuint textureID = textureManager->getTexture(TEXTURE_FLOOR);
 
+	//const float size = 1;
+	//const float rows = 5;
+	//const float columns = 90;
+	//const float startColumn = -10;
+	//for (float i = 0 + (size * 2); i < (rows + (size * 2)); i += (size * 2))
+	//{
+	//	for (float j = startColumn; j < (columns + (size * 2)); j += (size * 2))
+	//	{
+	//		GameObject* floor = new GameObject();
+	//		floor->tag = Tags::FLOOR;
+	//		floor->addComponent(new SlabComponent(size, textureID));
+	//		floor->position = Vec3f(j, 0, i);
+	//		floor->rotation = Vec3f(90, 0, 0);
+
+	//		objects->push_back(floor);
+	//	}
+	//}
 }

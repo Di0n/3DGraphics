@@ -101,6 +101,65 @@ bool initOpenGL()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glAlphaFunc(GL_GREATER, 0.5);
 
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	//GLfloat light_position[] = { -6.0, 0.0, 0.0, 1 };
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	//GLfloat light_diff[] = { 1.0, 1.0, 1.0, 1.0 };
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diff);
+	//GLfloat light_amb[] = { 0.0, 0.0, 0.0, 1.0 };
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, light_amb);
+	return true;
+
+
+//	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+//	GLfloat mat_shininess[] = { 50.0 };
+//	GLfloat light_position[] = { 15.0, 3.0, 1.0, 0.0 };
+//
+////	GLfloat light_position[] = { 15.0f, 6.0, 3.0, 0.0 };
+//	//glClearColor(0.0, 0.0, 0.0, 0.0);
+//	glShadeModel(GL_SMOOTH);
+//
+//	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+//	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+//	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+//
+//	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHT0);
+//
+//	GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+//	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+//	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+//
+//	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+//	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+//	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+//	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	/*glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHTING);
+
+	GLfloat ambient[] = { 0.0f,0.0f,0.0f,1.0f };
+	GLfloat diffuse[] = { 1.0f,1.0f,1.0f,1.0f };
+	GLfloat position[] = { 0.0f,3.0f,3.0f,0.0f };
+	GLfloat lightmodel[] = { 0.2f,0.2f,0.2f,1.0f };
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, position);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightmodel);
+
+	glEnable(GL_LIGHT1);
+
+	GLfloat lightZeroPosition[] = { 10.0f,4.0f,10.0f,1.0f };
+	GLfloat lightZeroColor[] = { 1.0f,1.0f,1.0f,1.0f };
+	glLightfv(GL_LIGHT0, GL_POSITION, lightZeroPosition);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.1f);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05f);
+
+	glEnable(GL_LIGHT0);*/
+
+
 	return true;
 }
 int main(int argc, char** argv)

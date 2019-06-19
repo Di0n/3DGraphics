@@ -66,10 +66,14 @@ namespace Game
 
 		textureManager.addTextureSource(TEXTURE_WALL);
 		textureManager.addTextureSource(TEXTURE_FLOOR);
-		textureManager.addTextureSource(TEXTURE_THWOMP);
-		textureManager.addTextureSource(TEXTURE_CASTLE);
 		textureManager.addTextureSource(TEXTURE_BALL);
 		textureManager.addTextureSource(TEXTURE_BOX);
+		textureManager.addTextureSource(TEXTURE_SAND);
+		textureManager.addTextureSource(TEXTURE_WALL_1);
+		textureManager.addTextureSource(TEXTURE_FINISH);
+
+
+
 
 		textureManager.load();
 		
@@ -159,6 +163,8 @@ namespace Game
 		}
 	}
 	float fogCol[3] = { 0.8f, 0.8f, 0.8f };
+	float fogStart = 2.0f;
+	float fogEnd = 60.0f;
 	void draw()
 	{
 		// Camera view
@@ -168,40 +174,25 @@ namespace Game
 		
 		//glColor3f(0.5f, 0.8f, 0.2f);
 		// Mist
-		/*
+
 		glEnable(GL_FOG);
 		
 		glFogfv(GL_FOG_COLOR, fogCol);
 		glFogi(GL_FOG_MODE, GL_LINEAR);
 
 		glFogf(GL_FOG_START, 2.0f);
-		glFogf(GL_FOG_END, 60.0f);
-		*/
+		glFogf(GL_FOG_END, 20.0f);
+		
 		
 		for (const auto& o : objects)
 			o->draw();
 
-		//glDisable(GL_FOG);
+		glDisable(GL_FOG);
 
 		float avgFrames = frc.getAverageFramesPerSecond();
 		string avgStr = std::to_string(avgFrames);
 		string fps = "FPS: " + avgStr.substr(0, avgStr.find_last_of('.'));
 		Util::drawText(Util::Color4(255, 255, 255, 1), Vec2f(20, windowHeight - 40), windowWidth, windowHeight, fps);
-
-		// Floor
-		/*glColor3f(0.1f, 1.0f, 0.2f);
-		glBegin(GL_QUADS);
-		glVertex3f(-15, -1, -15);
-		glVertex3f(15, -1, -15);
-		glVertex3f(15, -1, 15);
-		glVertex3f(-15, -1, 15);
-		glEnd();
-
-		glColor3f(0.5f, 0.8f, 0.2f);
-		for (const auto& o : objects)
-			o->draw();*/
-
-		
 
 			//glBegin(GL_QUADS);
 			//glVertex3f(-15, -1, -15);
@@ -253,6 +244,11 @@ namespace Game
 			glutLeaveMainLoop();
 			break;
 		case 'z':
+
+			fogStart += 1.0f;
+			break;
+		case 'x':
+			fogEnd -= 0.5f; 
 			break;
 		default:
 			break;
