@@ -28,7 +28,7 @@ void Scene::setup()
 	const float playerHitbox = 0.3f;
 	player->addComponent(new HitboxComponent(playerHitbox, playerHitbox, playerHitbox));
 	player->addComponent(new AudioComponent(Tags::DEATH_SOUND));
-	player->position = Vec3f(90, 0, 4);
+	player->position = Vec3f(-8, 0, 4);
 	//player->rotation = Vec3f(0, 0, 240);
 	objects->push_back(player);
 
@@ -108,16 +108,19 @@ void Scene::setupWalls()
 		objects->push_back(wall);
 	}
 
+	GLuint finishTexture = textureManager->getTexture(TEXTURE_FINISH);
 	const float startingPosFinishWalls = 2;
 	const float finishWalls = 5;
 	for (float i = startingPosFinishWalls; i < (finishWalls + area); i += area)
 	{
+
 		GameObject* wall = new GameObject();
 		wall->tag = Tags::WALL;
-		wall->addComponent(new SlabComponent(1, textureID));
+		wall->addComponent(new SlabComponent(1, finishTexture));
 		wall->position = Vec3f(90, 0, i);
 		wall->rotation = Vec3f(0, 90, 0);
 		objects->push_back(wall);
+		
 	}
 
 	for (float i = startingPosFinishWalls; i < (finishWalls + area); i += area)
@@ -125,7 +128,7 @@ void Scene::setupWalls()
 		GameObject* wall = new GameObject();
 		wall->tag = Tags::WALL;
 		wall->addComponent(new SlabComponent(1, textureID));
-		wall->position = Vec3f(90, 0, i);
+		wall->position = Vec3f(90, area, i);
 		wall->rotation = Vec3f(0, 90, 0);
 		objects->push_back(wall);
 	}

@@ -10,9 +10,25 @@
 #include "MoveToComponent.h"
 
 
-GameObject* ObjectSpawner::spawnRandomObstacle(float spawnPos)
+GameObject* ObjectSpawner::spawnRandomObstacle(float spawnPos, const ObjectType& type)
 {
 	GameObject* obstacle = new GameObject();
+
+	switch (type)
+	{
+	case ObjectType::Obstacle:
+		
+		break;
+	case ObjectType::Speed:
+		break;
+	case ObjectType::Slow:
+		break;
+	case ObjectType::Light:
+		
+		break;
+	default:
+		break;
+	}
 	obstacle->tag = Tags::OBSTACLE;
 	float randomZ = Util::getRandomNumber<int>(MIN_Z, MAX_Z);
 	randomZ = (randomZ == MIN_Z) ? randomZ + 0.5f : randomZ;

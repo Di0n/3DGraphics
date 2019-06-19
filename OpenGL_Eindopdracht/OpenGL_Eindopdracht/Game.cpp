@@ -28,6 +28,7 @@
 #include "SoundPlayer.hpp"
 #include "MusicResources.hpp"
 #include "ObjectSpawner.hpp"
+
 using std::string;
 using std::vector;
 using std::cout;
@@ -35,7 +36,15 @@ using std::endl;
 namespace Game
 {
 	void spawnObstacle();
-	const int MAX_OBSTACLES = 20;
+	void gameStart();
+	void gameOver(int reason);
+
+	const int MAX_OBSTACLES = 30;
+	const float DESPAWN_POS = 5.0f;
+	const int TIME_BETWEEN_SPAWNS = 100;
+	const float DRAW_DISTANCE = 50.0f;
+	const int PLAYER_DIED = 1;
+	const int PLAYER_WON = 2;
 
 	int windowWidth, windowHeight;
 	bool keys[256];
@@ -58,7 +67,10 @@ namespace Game
 	HitboxComponent* playerHitbox;
 
 	int obstacleCount;
-	const float DESPAWN_POS = 5.0f;
+	bool toggleLight = true;
+	bool gameStarted = false;
+	bool drawEndScreen = false;
+
 
 	void loadContent()
 	{
@@ -71,9 +83,7 @@ namespace Game
 		textureManager.addTextureSource(TEXTURE_SAND);
 		textureManager.addTextureSource(TEXTURE_WALL_1);
 		textureManager.addTextureSource(TEXTURE_FINISH);
-
-
-
+		textureManager.addTextureSource(TEXTURE_DIED_SCREEN);
 
 		textureManager.load();
 		
@@ -85,27 +95,19 @@ namespace Game
 
 		//Level level = Level(&camera, &objects, &textureManager);
 		//level.setup();
-		Scene scene(&camera, &objects, &textureManager);
-		scene.setup();
-		for (auto o : objects)
-		{
-			if (o->tag == Tags::PLAYER)
-			{
-				player = o;
-				playerHitbox = player->getComponent<HitboxComponent>();
-				break;
-			}
-		}
+		gameStart();
 	}
 
 	long long hitcount = 0;
-	int spawn = 0;
+	int lastSpawnTime;
 	void update(float deltaTime)
 	{
 		frc.update(deltaTime);
 
+		if (!gameStarted) return;
 		vector<GameObject*>::iterator itr = objects.begin();
 
+		int status = 0;
 		while (itr != objects.end())
 		{
 			auto o = (*itr);
@@ -124,6 +126,8 @@ namespace Game
 					cout << "Hit: " << hitcount++ << endl;
 					auto ac = player->getComponent<AudioComponent>();
 					ac->playSound(false);
+					status = PLAYER_DIED;
+					break;
 				}
 			}
 			else if (o == player)
@@ -153,18 +157,28 @@ namespace Game
 			}
 			o->update(deltaTime);
 			++itr;
-			spawn++;
 		}
 
-		if (obstacleCount < MAX_OBSTACLES && spawn  > 20000)
+		if (status == PLAYER_DIED)
 		{
-			spawnObstacle();
-			spawn = 0;
+			gameOver(PLAYER_DIED);
+		}
+		else if (status == PLAYER_WON)
+		{
+			gameOver(PLAYER_WON);
+		}
+		else
+		{
+			int currentTime = glutGet(GLUT_ELAPSED_TIME);
+			if (obstacleCount < MAX_OBSTACLES && ((currentTime - lastSpawnTime) >= TIME_BETWEEN_SPAWNS)
+				&& (90 - fabsf(player->position.x)) > 5)
+			{
+				spawnObstacle();
+				lastSpawnTime = currentTime;
+			}
 		}
 	}
 	float fogCol[3] = { 0.8f, 0.8f, 0.8f };
-	float fogStart = 2.0f;
-	float fogEnd = 60.0f;
 	void draw()
 	{
 		// Camera view
@@ -175,6 +189,25 @@ namespace Game
 		//glColor3f(0.5f, 0.8f, 0.2f);
 		// Mist
 
+		if (!toggleLight)
+		{
+			glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHT0);
+			//GLfloat light_position[] = { 0.0, 0.0, 0.0, 1 };
+			GLfloat lightPosition[] = { 0.0, 0.0, 0.0, 1 };
+
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+			GLfloat lightDiff[] = { 1.0, 1.0, 1.0, 1.0 };
+			glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiff);
+			GLfloat lightAmb[] = { 0.0, 0.0, 0.0, 1.0 };
+			glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb);
+		}
+		else
+		{
+			glDisable(GL_LIGHTING);
+			glDisable(GL_LIGHT0);
+		}
+
 		glEnable(GL_FOG);
 		
 		glFogfv(GL_FOG_COLOR, fogCol);
@@ -183,11 +216,21 @@ namespace Game
 		glFogf(GL_FOG_START, 2.0f);
 		glFogf(GL_FOG_END, 20.0f);
 		
-		
+
 		for (const auto& o : objects)
-			o->draw();
+		{
+			if (o->position.distance(player->position) <= DRAW_DISTANCE)
+				o->draw();
+		}
 
 		glDisable(GL_FOG);
+
+		if (drawEndScreen)
+		{
+			const string text = "YOU DIED\nPress Enter to restart.";
+			Util::drawText(Util::Color4(255, 0, 0, 1), Vec2f((windowWidth / 2 - 40), (windowHeight / 2 - 40)), windowWidth, windowHeight, text);
+		}
+		
 
 		float avgFrames = frc.getAverageFramesPerSecond();
 		string avgStr = std::to_string(avgFrames);
@@ -201,11 +244,55 @@ namespace Game
 			//glVertex3f(-15, -1, 15);
 			//glEnd();
 	}
+
+	void gameStart()
+	{
+		for (auto o : objects)
+		{
+			if (o)
+			{
+				delete o;
+			}
+		}
+		objects.clear();
+
+		Scene scene(&camera, &objects, &textureManager);
+		scene.setup();
+		for (auto o : objects)
+		{
+			if (o->tag == Tags::PLAYER)
+			{
+				player = o;
+				playerHitbox = player->getComponent<HitboxComponent>();
+				break;
+			}
+		}
+		toggleLight = true;
+		lastSpawnTime = 0;
+		obstacleCount = 0;
+		gameStarted = true;
+		drawEndScreen = false;
+	}
+
+	void gameOver(int reason)
+	{
+		gameStarted = false;
+
+		if (reason == PLAYER_DIED)
+		{
+			drawEndScreen = true;
+
+			cout << "You died\n";
+		}
+		else if (reason == PLAYER_WON)
+			cout << "You won\n";
+
+	}
 	
 	void spawnObstacle()
 	{
 		static ObjectSpawner spawner = ObjectSpawner(&textureManager);
-		objects.push_back(spawner.spawnRandomObstacle(player->position.x + 30));
+		objects.push_back(spawner.spawnRandomObstacle(player->position.x + 30, ObjectSpawner::ObjectType::Obstacle));
 		obstacleCount++;
 		//GameObject* obstacle = new GameObject();
 		//obstacle->tag = Tags::OBSTACLE;
@@ -244,11 +331,14 @@ namespace Game
 			glutLeaveMainLoop();
 			break;
 		case 'z':
-
-			fogStart += 1.0f;
+			toggleLight = !toggleLight;
 			break;
-		case 'x':
-			fogEnd -= 0.5f; 
+		case VK_RETURN:
+			
+			if (!gameStarted)
+			{
+				gameStart();
+			}
 			break;
 		default:
 			break;
@@ -257,6 +347,7 @@ namespace Game
 
 	void onMouseMove(int x, int y)
 	{
+		if (!gameStarted) return;
 		static bool justMoved = false;
 
 		if (justMoved)

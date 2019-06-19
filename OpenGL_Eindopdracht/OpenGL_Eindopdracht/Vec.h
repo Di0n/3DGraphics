@@ -26,6 +26,8 @@ public:
 
 	Vec3f normalized() const;
 	float length() const;
+
+	float distance(const Vec3f& v) const;
 };
 
 class Vec2f

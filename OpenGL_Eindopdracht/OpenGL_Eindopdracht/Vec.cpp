@@ -71,6 +71,16 @@ float Vec3f::length() const
 	return sqrtf(x*x+y*y+z*z);
 }
 
+float Vec3f::distance(const Vec3f& v) const
+{
+	Vec3f diff;
+	diff.x = x - v.x;
+	diff.y = y - v.y;
+	diff.z = z - v.z;
+
+	return sqrtf(powf(diff.x, 2) + powf(diff.y, 2) + powf(diff.z, 2));
+}
+
 
 
 Vec2f::Vec2f(float x, float y)
