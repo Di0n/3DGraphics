@@ -1,0 +1,12 @@
+#pragma once
+#define TEXTURE_WALL	"wall\\wall.png"
+#define TEXTURE_FLOOR	"floor\\test.jpg"
+#define TEXTURE_TABLE	"table\\wood.jpg"
+#define TEXTURE_THWOMP	"wall\\thwomp.png"
+#define TEXTURE_CASTLE	"wall\\castle.jpg"
+#define TEXTURE_BALL	"sphere\\ball.png"
+#define TEXTURE_BOX		"cube\\metal_box\\back.png"
+#define TEXTURE_GRASS	"floor\\grass.png"
+#define TEXTURE_WALL_1	"wall\\wall2.jpg"
+#define TEXTURE_SAND	"floor\\dirt.png"
+#define TEXTURE_FINISH	"wall\\finish.png"
