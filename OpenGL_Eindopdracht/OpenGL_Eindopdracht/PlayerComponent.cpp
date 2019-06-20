@@ -43,11 +43,19 @@ void PlayerComponent::update(float elapsedTime)
 	Vec3f oldPos = gameObject->position;
 	gameObject->position = newPos;
 
+	const float rightBounds = 6.7f;
+	const float leftBounds = 1.3f;
+	const float floorBounds = 0;
+	const float backBounds = -10.5f;
 	// Check bounds
-	if (gameObject->position.y < 0)
+	if (gameObject->position.y < floorBounds)
 	{
 		gameObject->position.y = oldPos.y;
 	}
+	if (gameObject->position.x < backBounds)
+		gameObject->position.x = oldPos.x;
+	if (gameObject->position.z < leftBounds || gameObject->position.z > rightBounds)
+		gameObject->position.z = oldPos.z;
 	
 	cam->posX = -gameObject->position.x;
 	cam->posY = -(gameObject->position.z );

@@ -126,6 +126,9 @@
     <ClCompile Include="Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StarComponent.cpp">
+      <Filter>Source Files\GameObjects\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp">
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="Menu.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StarComponent.hpp">
+      <Filter>Header Files\GameObjects\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -142,6 +142,7 @@
     <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="SphereComponent.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="StarComponent.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TimerJumper.cpp" />
     <ClCompile Include="Util.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="SoundPlayer.hpp" />
     <ClInclude Include="SphereComponent.hpp" />
     <ClInclude Include="SpinComponent.h" />
+    <ClInclude Include="StarComponent.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Tags.hpp" />
     <ClInclude Include="TextureManager.hpp" />

@@ -2,6 +2,7 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <GL\freeglut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -29,6 +30,7 @@
 #include "MusicResources.hpp"
 #include "ObjectSpawner.hpp"
 
+#define FOG
 using std::string;
 using std::vector;
 using std::cout;
@@ -38,11 +40,16 @@ namespace Game
 	void spawnObstacle();
 	void gameStart();
 	void gameOver(int reason);
+	void drawResult();
+	void drawHighscore();
+
+
 
 	const int MAX_OBSTACLES = 30;
 	const float DESPAWN_POS = 5.0f;
-	const int TIME_BETWEEN_SPAWNS = 100;
-	const float DRAW_DISTANCE = 50.0f;
+	const float SPAWN_STOP = 15.0f;
+	const int TIME_BETWEEN_SPAWNS = 150;
+	const float DRAW_DISTANCE = 5000.0f;
 	const int PLAYER_DIED = 1;
 	const int PLAYER_WON = 2;
 
@@ -70,6 +77,11 @@ namespace Game
 	bool toggleLight = true;
 	bool gameStarted = false;
 	bool drawEndScreen = false;
+	int lastHit;
+	int startTime;
+	int endTime;
+	int result;
+	irrklang::ISound* gameSound;
 
 
 	void loadContent()
@@ -79,16 +91,23 @@ namespace Game
 		textureManager.addTextureSource(TEXTURE_WALL);
 		textureManager.addTextureSource(TEXTURE_FLOOR);
 		textureManager.addTextureSource(TEXTURE_BALL);
-		textureManager.addTextureSource(TEXTURE_BOX);
+		textureManager.addTextureSource(TEXTURE_MBOX);
+		textureManager.addTextureSource(TEXTURE_EMPBOX);
+		textureManager.addTextureSource(TEXTURE_WBOX);
 		textureManager.addTextureSource(TEXTURE_SAND);
 		textureManager.addTextureSource(TEXTURE_WALL_1);
 		textureManager.addTextureSource(TEXTURE_FINISH);
 		textureManager.addTextureSource(TEXTURE_DIED_SCREEN);
+		textureManager.addTextureSource(TEXTURE_STARS);
+
 
 		textureManager.load();
 		
 		soundPlayer = &SoundPlayer::getInstance();
 		soundPlayer->addSound(MusicResources::DEATH_SOUND, Tags::DEATH_SOUND, true);
+		soundPlayer->addSound(MusicResources::ELECTRICAL_SOUND, MusicResources::ELECTRICAL_SOUND, true);
+		soundPlayer->addSound(MusicResources::GAME_MUSIC, MusicResources::GAME_MUSIC, true);
+
 		//soundPlayer->addSound(MusicResources::DEATH_SOUND, "TEST", true);
 
 		camera = Camera(0, -4, 0, 0, 0, 0);
@@ -108,11 +127,14 @@ namespace Game
 		vector<GameObject*>::iterator itr = objects.begin();
 
 		int status = 0;
+		obstacleCount = 0;
 		while (itr != objects.end())
 		{
 			auto o = (*itr);
-			if (o->tag == Tags::OBSTACLE)
+			o->update(deltaTime);
+			if (o->tag == Tags::OBSTACLE || o->tag == Tags::EMP)
 			{
+				obstacleCount++;
 				if (o->position.x < (player->position.x - DESPAWN_POS))
 				{
 					obstacleCount--;
@@ -124,15 +146,27 @@ namespace Game
 				if (hitbox->collided(playerHitbox))
 				{
 					cout << "Hit: " << hitcount++ << endl;
-					auto ac = player->getComponent<AudioComponent>();
-					ac->playSound(false);
-					status = PLAYER_DIED;
-					break;
+					
+					if (o->tag == Tags::OBSTACLE)
+					{
+						auto ac = player->getComponent<AudioComponent>();
+						ac->playSound(false);
+						status = PLAYER_DIED;
+						break;
+					}
+					else if (o->tag == Tags::EMP)
+					{
+						toggleLight = false;
+					}
 				}
 			}
 			else if (o == player)
 			{
-				soundPlayer->setListenerPosition(player->position, player->rotation);
+				soundPlayer->setListenerPosition(player->position, Vec3f(-camera.rotX, -camera.rotY,- camera.rotZ));
+				if (player->position.x >= 90)
+				{
+					gameOver(PLAYER_WON);
+				}
 			}
 			else if (o->tag == "BALL")
 			{
@@ -155,12 +189,13 @@ namespace Game
 				else if (o->position.z > 20)
 					o->velocity.z *= -1;
 			}
-			o->update(deltaTime);
+			
 			++itr;
 		}
 
 		if (status == PLAYER_DIED)
 		{
+			toggleLight = true;
 			gameOver(PLAYER_DIED);
 		}
 		else if (status == PLAYER_WON)
@@ -171,7 +206,7 @@ namespace Game
 		{
 			int currentTime = glutGet(GLUT_ELAPSED_TIME);
 			if (obstacleCount < MAX_OBSTACLES && ((currentTime - lastSpawnTime) >= TIME_BETWEEN_SPAWNS)
-				&& (90 - fabsf(player->position.x)) > 5)
+				&& (90 - fabsf(player->position.x)) > SPAWN_STOP)
 			{
 				spawnObstacle();
 				lastSpawnTime = currentTime;
@@ -181,6 +216,8 @@ namespace Game
 	float fogCol[3] = { 0.8f, 0.8f, 0.8f };
 	void draw()
 	{
+		const int currentTime = glutGet(GLUT_ELAPSED_TIME);
+
 		// Camera view
 		glRotatef(camera.rotX, 1, 0, 0);
 		glRotatef(camera.rotY, 0, 1, 0);
@@ -208,6 +245,7 @@ namespace Game
 			glDisable(GL_LIGHT0);
 		}
 
+#ifdef FOG
 		glEnable(GL_FOG);
 		
 		glFogfv(GL_FOG_COLOR, fogCol);
@@ -215,28 +253,40 @@ namespace Game
 
 		glFogf(GL_FOG_START, 2.0f);
 		glFogf(GL_FOG_END, 20.0f);
-		
+#endif
 
 		for (const auto& o : objects)
 		{
 			if (o->position.distance(player->position) <= DRAW_DISTANCE)
 				o->draw();
 		}
-
+#ifdef FOG
 		glDisable(GL_FOG);
+#endif
 
 		if (drawEndScreen)
 		{
-			const string text = "YOU DIED\nPress Enter to restart.";
-			Util::drawText(Util::Color4(255, 0, 0, 1), Vec2f((windowWidth / 2 - 40), (windowHeight / 2 - 40)), windowWidth, windowHeight, text);
+			drawResult();
+			drawHighscore();
 		}
 		
 
 		float avgFrames = frc.getAverageFramesPerSecond();
 		string avgStr = std::to_string(avgFrames);
 		string fps = "FPS: " + avgStr.substr(0, avgStr.find_last_of('.'));
-		Util::drawText(Util::Color4(255, 255, 255, 1), Vec2f(20, windowHeight - 40), windowWidth, windowHeight, fps);
 
+		//string text = fps + ("\nObjects: " + obstacleCount);
+		Util::drawText(Util::Color4(255, 255, 255, 1), Vec2f(20, windowHeight - 40), windowWidth, windowHeight, fps);
+		
+		if (gameStarted)
+		{
+			int remaining = currentTime - startTime;
+
+			int minutes, seconds;
+			Util::toTime(remaining, &minutes, &seconds);
+			string time = std::to_string(minutes) + ':' + std::to_string(seconds);
+			Util::drawText(Util::Color4(255, 255, 255, 1), Vec2f(windowWidth - 70, windowHeight - 40), windowWidth, windowHeight, time);
+		}
 			//glBegin(GL_QUADS);
 			//glVertex3f(-15, -1, -15);
 			//glVertex3f(15, -1, -15);
@@ -245,6 +295,86 @@ namespace Game
 			//glEnd();
 	}
 
+	void drawResult()
+	{
+		int minutes, seconds;
+		Util::toTime(endTime, &minutes, &seconds);
+
+		if (result == PLAYER_DIED)
+		{
+			const string text = "YOU DIED\nYou survived: " + std::to_string(minutes) +
+				" minutes and " + std::to_string(seconds) + " seconds\nPress Enter to restart.";
+			Util::drawText(Util::Color4(255, 0, 0, 1), Vec2f((windowWidth / 2 - 100), (windowHeight / 2 - 40)), windowWidth, windowHeight, text);
+		}
+		else
+		{
+			const string text = "YOU WON\nTime: " + std::to_string(minutes) +
+				" minutes and " + std::to_string(seconds) + " seconds\nPress Enter to restart.";
+			Util::drawText(Util::Color4(255, 215, 0, 1), Vec2f((windowWidth / 2 - 100), (windowHeight / 2 - 40)), windowWidth, windowHeight, text);
+		}
+	}
+	
+
+	void setHighScore(int minutes, int seconds)
+	{
+		std::ofstream file("hs.score", std::ofstream::out | std::ofstream::trunc);
+		if (file.is_open())
+		{
+			file << std::to_string(minutes) << '\n';
+			file << std::to_string(seconds);
+		}
+	}
+	void drawHighscore()
+	{
+		// Schrijf leaderboards op scherm
+		static int hsMin = -1, hsSec = - 1;
+
+		if (hsMin == -1 || hsSec == -1)
+		{
+			std::ifstream file("hs.score", std::ifstream::in);
+			if (file.is_open())
+			{
+				string line;
+				int i = 0;
+				while (std::getline(file, line))
+				{
+					const int nr = std::stoi(line, nullptr);
+					if (i++ == 0)
+						hsMin = nr;
+					else
+					{
+						hsSec = nr;
+						break;
+					}
+				}
+			}
+			else
+			{
+				if (result != PLAYER_WON) return;
+				int m, s;
+				Util::toTime(endTime, &m, &s);
+				setHighScore(m, s);
+				hsMin = m;
+				hsSec = s;
+			}
+		}
+		else if (result == PLAYER_WON)
+		{
+			int m, s;
+			Util::toTime(endTime, &m, &s);
+
+			if (m <= hsMin && s < hsSec)
+			{
+				hsMin = m;
+				hsSec = s;
+				setHighScore(hsMin, hsSec);
+			}
+		}
+
+		string text = "Highscore: " + std::to_string(hsMin) + " minutes and "+ std::to_string(hsSec) + " seconds.";
+		Util::drawText(Util::Color4(255, 215, 0, 1), Vec2f((windowWidth/2) -100, (windowHeight / 2) - 200),
+			windowWidth, windowHeight, text);
+	}
 	void gameStart()
 	{
 		for (auto o : objects)
@@ -272,45 +402,49 @@ namespace Game
 		obstacleCount = 0;
 		gameStarted = true;
 		drawEndScreen = false;
+		lastHit = 0;
+		startTime = glutGet(GLUT_ELAPSED_TIME);
+		endTime = 0;
+		result = 0;
+		gameSound = soundPlayer->playSound(MusicResources::GAME_MUSIC, true);
+		gameSound->setVolume(0.3f);
 	}
 
 	void gameOver(int reason)
 	{
 		gameStarted = false;
+		endTime = (glutGet(GLUT_ELAPSED_TIME)) - startTime;
+		if (gameSound)
+		{
+			gameSound->setIsPaused(true);
+			gameSound->drop();
+			gameSound = nullptr;
+		}
 
+		result = reason;
 		if (reason == PLAYER_DIED)
 		{
 			drawEndScreen = true;
-
+			
 			cout << "You died\n";
 		}
 		else if (reason == PLAYER_WON)
+		{
+			drawEndScreen = true;
 			cout << "You won\n";
-
+		}
 	}
 	
 	void spawnObstacle()
 	{
 		static ObjectSpawner spawner = ObjectSpawner(&textureManager);
-		objects.push_back(spawner.spawnRandomObstacle(player->position.x + 30, ObjectSpawner::ObjectType::Obstacle));
-		obstacleCount++;
-		//GameObject* obstacle = new GameObject();
-		//obstacle->tag = Tags::OBSTACLE;
-		//float randomZ = 2; //Util::getRandomNumber<int>(2, 6);
-
-		//obstacle->position = Vec3f(30, -0.5f, randomZ);
-		////obstacle->addComponent(new CubeComponent(0.25f));
-		//GLuint texture = textureManager.getTexture(TEXTURE_BOX);
-		////obstacle->addComponent(new WallComponent(0.5f, texture));
-		//obstacle->addComponent(new CubeComponent(0.5f, texture));
-		//obstacle->addComponent(new HitboxComponent(0.5f, 0.5f, 0.5f));
-		//MoveToComponent* m = new MoveToComponent();
-		//m->target = Vec3f(-20, -0.5f, randomZ);
-		//m->speed = 5;
-		//obstacle->rotation = Vec3f(0, 90, 0);
-		//obstacle->addComponent(m);
-		//obstacleCount++;
-		//objects.push_back(obstacle);
+		const int nr = Util::getRandomNumber<int>(0, 19);
+		ObjectSpawner::ObjectType type;
+		if (nr == 0)
+			type = ObjectSpawner::Light;
+		else
+			type = ObjectSpawner::Obstacle;
+		objects.push_back(spawner.spawnRandomObstacle(player->position.x + 30, type));
 	}
 
 	void onKey(Key key)
@@ -331,7 +465,7 @@ namespace Game
 			glutLeaveMainLoop();
 			break;
 		case 'z':
-			toggleLight = !toggleLight;
+			cout << "Pos z: " << player->position.z << "\n";
 			break;
 		case VK_RETURN:
 			

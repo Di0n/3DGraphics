@@ -39,7 +39,7 @@ public:
 	// Gets an available sound id.
 	static SoundID getAvailableSoundID();
 
-	void playSound(const SoundID& sound, bool looped);
+	irrklang::ISound* playSound(const SoundID& sound, bool looped);
 	irrklang::ISound* playSound3D(const SoundID& sound, const Vec3f& pos, bool looped);
 };
 
