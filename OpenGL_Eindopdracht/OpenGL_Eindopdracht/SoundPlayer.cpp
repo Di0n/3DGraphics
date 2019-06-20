@@ -73,13 +73,14 @@ void SoundPlayer::setListenerPosition(const Vec3f& pos, const Vec3f& heading)
 	engine->setListenerPosition(vec3df(pos.x, pos.y, pos.z), vec3df(heading.x, heading.y, heading.z));
 }
 
-void SoundPlayer::playSound(const SoundID& sound, bool looped)
+ISound* SoundPlayer::playSound(const SoundID& sound, bool looped)
 {
 	auto source = getSoundSource(sound);
 	if (source != nullptr)
 	{
-		engine->play2D(source);
+		return engine->play2D(source, looped, false, true);
 	}
+	return nullptr;
 }
 
 ISound* SoundPlayer::playSound3D(const SoundID& sound, const Vec3f& pos, bool looped)

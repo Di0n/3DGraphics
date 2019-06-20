@@ -18,4 +18,6 @@ namespace Util
 		std::uniform_int_distribution<T> distributor(min, max);
 		return distributor(rng);
 	}
+
+	void toTime(int ms, int* minutes, int* seconds);
 }

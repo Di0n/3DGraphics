@@ -5,10 +5,17 @@ class TextureManager;
 class ObjectSpawner
 {
 public:
+	enum ObjectType
+	{
+		Obstacle,
+		Speed,
+		Slow,
+		Light
+	};
 	ObjectSpawner() {}
 	ObjectSpawner(TextureManager* textureManager) : textureManager(textureManager){}
 
-	 GameObject* spawnRandomObstacle(float spawnPos);
+	 GameObject* spawnRandomObstacle(float spawnPos, const ObjectType& type);
 private:
 	TextureManager* textureManager;
 	const float TARGET_X = -20.0f;

@@ -74,7 +74,7 @@ void Level::setup()
 	//sphere->position = Vec3f(-4, 0, 4);
 	//objects->push_back(sphere);
 
-	textureID = textureManager->getTexture(TEXTURE_BOX);
+	textureID = textureManager->getTexture(TEXTURE_MBOX);
 	GameObject* box = new GameObject();
 	box->addComponent(new CubeComponent(0.8f, textureID));
 	box->position = Vec3f(-4, 0, 4);

@@ -38,6 +38,16 @@ namespace Util
 		glPopMatrix();
 	}
 
+	void toTime(int ms, int* minutes, int* seconds)
+	{
+		*seconds = ms / 1000;
+		ms %= 1000;
+
+		*minutes = *seconds / 60;
+		*seconds %= 60;
+		*minutes %= 60;
+	}
+
 	//template<typename T>
 	/*T getRandomNumber(T min, T max)
 	{

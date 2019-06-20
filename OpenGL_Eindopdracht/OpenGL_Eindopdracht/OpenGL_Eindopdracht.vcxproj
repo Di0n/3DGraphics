@@ -132,6 +132,7 @@
     <ClCompile Include="HitboxComponent.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjectSpawner.cpp" />
     <ClCompile Include="ObjModel.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="SphereComponent.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="StarComponent.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TimerJumper.cpp" />
     <ClCompile Include="Util.cpp" />
@@ -162,6 +164,7 @@
     <ClInclude Include="GravityComponent.hpp" />
     <ClInclude Include="HitboxComponent.hpp" />
     <ClInclude Include="Level.hpp" />
+    <ClInclude Include="Menu.hpp" />
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="MusicResources.hpp" />
     <ClInclude Include="ObjectSpawner.hpp" />
@@ -172,6 +175,7 @@
     <ClInclude Include="SoundPlayer.hpp" />
     <ClInclude Include="SphereComponent.hpp" />
     <ClInclude Include="SpinComponent.h" />
+    <ClInclude Include="StarComponent.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Tags.hpp" />
     <ClInclude Include="TextureManager.hpp" />
